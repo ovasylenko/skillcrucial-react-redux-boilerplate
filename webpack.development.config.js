@@ -11,7 +11,7 @@ const config = {
   entry: [
     'babel-polyfill',
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3001',
+    'webpack-dev-server/client?http://localhost:8088',
     'webpack/hot/only-dev-server',
     './main.js',    
     './assets/scss/main.scss'
@@ -29,11 +29,6 @@ const config = {
   mode: 'development',
   context: resolve(__dirname, 'client'),
   devServer: {
-    headers: {
-      'Access-Control-Allow-Origin': 'http://localhost:8091',
-      'Access-Control-Allow-Headers': '*',
-      'Access-Control-Request-Headers': 'content-type, accept'
-    },
     hot: true,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,

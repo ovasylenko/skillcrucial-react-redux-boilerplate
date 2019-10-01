@@ -11,7 +11,6 @@ const Html = ({
     <body>
       <div id="root">${body}</div>
       <script type="text/javascript" src="/js/bundle.js?v=COMMITHASH"></script>
-
     </body>
   </html>
 `
