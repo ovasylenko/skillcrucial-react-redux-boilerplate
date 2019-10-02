@@ -16,7 +16,7 @@ class Dummy extends React.Component {
     return (
       <div>
         <Head title="Hello" />
-        <div> Dummy {this.state.counter} </div>
+        <div> Hello World {this.state.counter} </div>
       </div>
     )
   }
