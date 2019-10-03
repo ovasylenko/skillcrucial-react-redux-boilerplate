@@ -19,7 +19,6 @@ const clientVariables = Object.keys(process.env)
 const port = process.env.PORT || 3000;
 const server = express();
 
-
 server.use(cors());
 
 server.use(express.static(path.resolve(__dirname, '../dist/assets')));
