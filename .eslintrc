@@ -32,6 +32,11 @@
       "controlComponents": ["CustomInput"],
       "depth": 3
     }],
+    "max-len": ["error", {
+      "ignoreComments": true,
+      "ignoreStrings": true,
+      "code": 160
+    }],
     "import/no-cycle": "off",
     "react/prop-types": "off",
     "linebreak-style": "off",
