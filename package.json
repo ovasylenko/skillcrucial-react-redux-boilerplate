@@ -16,7 +16,7 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "next:build": "next",
-    "watch:server": "nodemon start.js --watch server --watch client --exec 'npm run lint:server && node'",
+    "watch:server": "nodemon start.js --watch server --watch client --exec \"npm run lint:server && node\"",
     "build:prod": " webpack --config webpack.production.frontend.config.js --progress --profile --colors",
     "heroku-postbuild": " webpack --config webpack.production.frontend.config.js --progress --profile --colors"
   },
@@ -85,6 +85,7 @@
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
     "next": "^7.0.2",
+    "openssl": "^1.1.0",
     "prop-types": "^15.6.2",
     "raf": "^3.4.1",
     "raw-loader": "^3.0.0",
