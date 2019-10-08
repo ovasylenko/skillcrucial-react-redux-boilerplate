@@ -1,7 +1,7 @@
 {
-  "name": "skillcrucial-react-redux-boilerplate",
+  "name": "landing-page-small-apps",
   "version": "0.0.1",
-  "description": "Skill Crucial. visit skillcrucial.com  to becoem react developer",
+  "description": "landing-page-small-apps",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --config ./webpack.development.config.js --hot --open --disable-host-check",
@@ -16,7 +16,7 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "next:build": "next",
-    "watch:server": "nodemon start.js --watch server --watch client --exec \"npm run lint:server && node\"",
+    "watch:server": "nodemon start.js --ignore \"*.hot-update.json\" --ignore \"js/bundle.js\" --ignore \"css/main.css\" --watch server --watch client --exec \"npm run lint:server && node\"",
     "build:prod": " webpack --config webpack.production.frontend.config.js --progress --profile --colors",
     "heroku-postbuild": " webpack --config webpack.production.frontend.config.js --progress --profile --colors"
   },
@@ -124,7 +124,7 @@
     "jest-cli": "^24.8.0",
     "node-hot-loader": "^1.12.3",
     "node-sass": "^4.10.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.19.3",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "16.6.3",
     "regenerator-runtime": "^0.13.2",
@@ -137,8 +137,10 @@
     "webpack-dev-server": "^3.2.1",
     "webpack-shell-plugin": "^0.5.0"
   },
-    "nodemonConfig": {
-    "ignore": ["*.hot-update.json"]
+  "nodemonConfig": {
+    "ignore": [
+      "*.hot-update.json"
+    ]
   },
   "husky": {
     "hooks": {
