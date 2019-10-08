@@ -137,6 +137,9 @@
     "webpack-dev-server": "^3.2.1",
     "webpack-shell-plugin": "^0.5.0"
   },
+    "nodemonConfig": {
+    "ignore": ["*.hot-update.json"]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "cross-env npm run lint && npm test",
