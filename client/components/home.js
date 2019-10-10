@@ -1,23 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import Head from './head'
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {}
-  }
-
-  render() {
-    return (
-      <div>
-        <Head title="Hello" />
-        <div> Hello World Home </div>
-      </div>
-    )
-  }
+const Home = () => {
+  const [counter] = useState(0)
+  return (
+    <div>
+      <Head title="Hello" />
+      <div> Hello World {counter} </div>
+    </div>
+  )
 }
 
 Home.propTypes = {}
