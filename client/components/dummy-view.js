@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import Head from './head'
 
-
 const Dummy = () => {
-  const counter = 1
+  const [counter] = useState(0)
   return (
     <div>
 
@@ -13,7 +12,6 @@ const Dummy = () => {
       <div> Hello World {counter} </div>
 
     </div>
-
   )
 }
 
