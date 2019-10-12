@@ -34,7 +34,7 @@ const config = {
     hot: true,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
-    host: '127.0.0.1',
+    host: 'localhost',
     port: 3001,
 
     historyApiFallback: true,
@@ -45,7 +45,7 @@ const config = {
     proxy: [
       {
         context: ['/api', '/auth', '/ws', '/js/variables.js', '/sockjs-node'],
-        target: 'http://localhost:3000',
+        target: 'http://[::1]:3000',
         secure: false,
         changeOrigin: true,
         ws: true
