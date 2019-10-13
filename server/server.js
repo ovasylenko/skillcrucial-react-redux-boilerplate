@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 import Html from '../client/html';
 import Variables from '../client/variables';
 
+const PAGE_SIZE = 10
 
 let connections = [];
 const clientVariables = Object.keys(process.env)
@@ -87,7 +88,7 @@ server.get('/js/variables.js', (req, res) => {
 
 const getFakeUser = () => {
   return {
-    Имя: faker.name.findName(),
+    Name: faker.name.findName(),
     email: faker.internet.email(),
     company: faker.company.companyName(),
     salary: faker.finance.amount(),
@@ -98,23 +99,30 @@ const getFakeUser = () => {
   }
 }
 
-server.get('/api/users', (req, res) => {
+server.get('/api/users/:pageIndex', (req, res) => {
+  const { pageIndex } = req.params
   const fileName = `${__dirname}/tmp/data.json`;
   fs.readFile(
     fileName,
     (err, data) => {
       if (!err) {
         return res.json(
-          JSON.parse(data)
+          JSON.parse(data).slice(
+            +pageIndex * PAGE_SIZE,
+            (+pageIndex + 1) * PAGE_SIZE
+          )
         )
       }
-      const dataGenerated = new Array(10).fill(null).map(getFakeUser);
+      const dataGenerated = new Array(100).fill(null).map(getFakeUser);
       return fs.writeFile(
         fileName,
         JSON.stringify(dataGenerated),
         () => {
           res.json(
-            dataGenerated
+            dataGenerated.slice(
+              +pageIndex * PAGE_SIZE,
+              (+pageIndex + 1) * PAGE_SIZE
+            )
           )
         }
       )
