@@ -35,7 +35,7 @@
       "max-len": ["error", {
       "ignoreComments": true,
       "ignoreStrings": true,
-      "code": 250
+      "code": 200
     }],
     "import/no-cycle": "off",
     "react/prop-types": "off",
