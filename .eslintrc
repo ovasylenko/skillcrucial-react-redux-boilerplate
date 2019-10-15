@@ -20,7 +20,6 @@
     "space-before-function-paren": "off",
     "react/prefer-stateless-function": "warn",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "max-len": ["error", 250],
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/label-has-for": [ 2, {
       "required": {
@@ -33,10 +32,10 @@
       "controlComponents": ["CustomInput"],
       "depth": 3
     }],
-    "max-len": ["error", {
+      "max-len": ["error", {
       "ignoreComments": true,
       "ignoreStrings": true,
-      "code": 160
+      "code": 250
     }],
     "import/no-cycle": "off",
     "react/prop-types": "off",
