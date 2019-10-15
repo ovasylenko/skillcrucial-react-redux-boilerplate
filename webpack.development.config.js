@@ -1,10 +1,12 @@
 const { resolve } = require('path');
 require('dotenv').config();
 const webpack = require('webpack');
+
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 require('babel-polyfill')
+
 const config = {
   devtool: 'cheap-module-eval-source-map',
 
@@ -13,13 +15,13 @@ const config = {
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3001',
     'webpack/hot/only-dev-server',
-    './main.js',    
+    './main.js',
     './assets/scss/main.scss'
   ],
   resolve: {
-      alias: {
-          'd3': 'd3/index.js'
-      }
+    alias: {
+      'd3': 'd3/index.js'
+    }
   },
   output: {
     filename: 'js/bundle.js',
@@ -32,7 +34,7 @@ const config = {
     hot: true,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3001,
 
     historyApiFallback: true,
@@ -43,7 +45,7 @@ const config = {
     proxy: [
       {
         context: ['/api', '/auth', '/ws', '/js/variables.js', '/sockjs-node'],
-        target: 'http://localhost:3000',
+        target: 'http://[::1]:3000',
         secure: false,
         changeOrigin: true,
         ws: true
@@ -65,7 +67,7 @@ const config = {
           'babel-loader',
         ],
         exclude: /node_modules/,
-      },      
+      },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -181,7 +183,7 @@ const config = {
         }
       },
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),    
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: 'css/main.css', disable: false, allChunks: true }),
     new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
     new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),

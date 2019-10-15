@@ -6,7 +6,7 @@
     "ecmaFeatures": {
       "jsx": true
     }
-  },  
+  },
   "plugins": [
     "react-hooks"
   ],
@@ -20,12 +20,13 @@
     "space-before-function-paren": "off",
     "react/prefer-stateless-function": "warn",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "max-len": ["error", 250],
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/label-has-for": [ 2, {
       "required": {
           "every": [ "id" ]
       }
-    }], 
+    }],
     "jsx-a11y/label-has-associated-control": [ 2, {
       "labelComponents": ["CustomInputLabel"],
       "labelAttributes": ["label"],
