@@ -75,6 +75,7 @@ const imgdata = [
 const imgbuf = Buffer.from(imgdata)
 server.get('/tracker/:userId.gif', (req, res) => {
   const { userId } = req.params
+  // <img src={`/tracker.${counter}.gif`} alt="tracker" />
   const dataObj = {
     language: req.headers['accept-language'],
     userAgent: req.headers['user-agent'],
@@ -104,7 +105,7 @@ server.get('/api/users', (req, res) => {
     (err, data) => {
       if (!err) {
         return res.json(
-          JSON.parse(data)
+          JSON.parse(data).slice(0, 10)
         )
       }
       const dataGenerated = new Array(100).fill(null).map(getFakeUser)
@@ -113,7 +114,7 @@ server.get('/api/users', (req, res) => {
         JSON.stringify(dataGenerated),
         () => {
           return res.json(
-            dataGenerated
+            dataGenerated.slice(0, 10)
           )
         }
       )
