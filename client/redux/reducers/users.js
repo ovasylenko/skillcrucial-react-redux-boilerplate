@@ -30,10 +30,10 @@ export default (state = initialState, action) => {
   }
 }
 
-export function getData() {
+export function getData(pageIndex = 0) {
   return (dispatch) => {
     dispatch({ type: REQUEST_STARTED })
-    return fetch('/api/users')
+    return fetch(`/api/users/${pageIndex}`)
       .then(res => res.json())
       .then((json) => {
         dispatch({

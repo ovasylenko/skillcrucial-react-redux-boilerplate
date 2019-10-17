@@ -7,15 +7,17 @@ import { getData } from '../redux/reducers/users'
 
 const Dummy = (props) => {
   const [counter] = useState(4)
+  const [pageIndex, setPageIndex] = useState(0)
   const { getData: getDataProps } = props
   useEffect(() => {
-    getDataProps()
-  }, [getDataProps])
+    getDataProps(pageIndex)
+  }, [getDataProps, pageIndex])
   return (
     <div>
       <Head title="Hello" />
       <div> {JSON.stringify(props.isRequesting)} </div>
-      <div> Hello World { counter } </div>
+      <div> Hello World { counter }</div>
+      <div> List: { pageIndex + 1 } From: {props.users.length}</div>
       <table>
         <tr>
           <td>Avatar</td>
@@ -46,6 +48,18 @@ const Dummy = (props) => {
           ))
         }
       </table>
+      <button
+        type="button"
+        onClick={() => setPageIndex(Math.max(0, pageIndex - 1))}
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        onClick={() => setPageIndex(Math.min(9, pageIndex + 1))}
+      >
+        Next
+      </button>
       <img src={`/tracker.${counter}.gif`} alt="tracker" />
     </div>
   )
