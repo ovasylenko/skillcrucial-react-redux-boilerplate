@@ -57,7 +57,7 @@ const getFakeUser = () => {
   return {
     Avatar: faker.image.avatar(),
     Name: faker.name.findName(),
-    Age: (faker.random.number % 30) + 20,
+    Age: (faker.random.number() % 30) + 20,
     Country: faker.address.country(),
     City: faker.address.city(),
     Phone: faker.phone.phoneNumber(),

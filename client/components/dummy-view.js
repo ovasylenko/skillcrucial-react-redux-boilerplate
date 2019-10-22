@@ -19,22 +19,26 @@ const Dummy = (props) => {
       <div> Hello World { counter }</div>
       <div> List: { pageIndex + 1 } From: {props.users.length}</div>
       <table>
-        <tr>
-          <td>Avatar</td>
-          <td>Name</td>
-          <td>Age</td>
-          <td>Country</td>
-          <td>City</td>
-          <td>Phone</td>
-          <td>Title</td>
-          <td>Job</td>
-          <td>IP</td>
-          <td>Salary</td>
-        </tr>
+        <thead>
+          <tr>
+            <td>NN</td>
+            <td>Avatar</td>
+            <td>Name</td>
+            <td>Age</td>
+            <td>Country</td>
+            <td>City</td>
+            <td>Phone</td>
+            <td>Title</td>
+            <td>Job</td>
+            <td>IP</td>
+            <td>Salary</td>
+          </tr>
+        </thead>
         {
-          props.users.map(user => (
+          props.users.map((user, ind) => (
             <tr>
-              <td>{user.Avatar}</td>
+              <td>{pageIndex * 10 + ind + 1}</td>
+              <td><img src={user.Avatar} width="40" alt={user.Name} /></td>
               <td>{user.Name}</td>
               <td>{user.Age}</td>
               <td>{user.Country}</td>
