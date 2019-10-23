@@ -8,6 +8,16 @@ import { getData } from '../redux/reducers/users'
 const Dummy = (props) => {
   const [counter] = useState(4)
   const [pageIndex, setPageIndex] = useState(0)
+  const [showText, changeShowText] = useState({
+    toggled1: true,
+    toggled2: false
+  })
+  const toggleSmth = () => {
+    changeShowText({
+      toggled1: !showText.toggled1,
+      toggled2: !showText.toggled2
+    })
+  }
   const { getData: getDataProps } = props
   useEffect(() => {
     getDataProps(pageIndex)
@@ -15,6 +25,17 @@ const Dummy = (props) => {
   return (
     <div>
       <Head title="Hello" />
+      {
+        showText.toggled1 && (
+          <div>Text is shown 1</div>
+        )
+      }
+      {
+        showText.toggled2 && (
+          <div>Text is shown 2</div>
+        )
+      }
+      <button type="button" onClick={toggleSmth}>Toggle me gently</button>
       <div> {JSON.stringify(props.isRequesting)} </div>
       <div> Hello World { counter }</div>
       <div> List: { pageIndex + 1 } From: {props.users.length}</div>
