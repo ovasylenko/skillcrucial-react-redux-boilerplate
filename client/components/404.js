@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 
-const NotFound = props => (
+const NotFound = (props) => (
   <div>
     <h1> 404: URL Is not found </h1>
     <button type="button" tabIndex="0" onClick={props.goRoot}>Go to root</button>
@@ -22,7 +22,7 @@ NotFound.defaultProps = {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
   goRoot: () => push('/')
 }, dispatch)
 

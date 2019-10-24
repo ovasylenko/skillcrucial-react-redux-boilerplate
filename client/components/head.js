@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-const Head = props => (
+const Head = (props) => (
   <Helmet>
     <title>SkillCrucial Boilerplate - {props.title}</title>
     <meta charSet="utf-8" />
