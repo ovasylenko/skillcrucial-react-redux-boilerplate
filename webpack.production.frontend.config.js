@@ -20,7 +20,7 @@ const config = {
       }
   },
   output: {
-    filename: 'js/bundle.js',
+    filename: 'js/[name]-bundle.js',
     path: resolve(__dirname, 'dist/assets'),
     publicPath: '',
   },
