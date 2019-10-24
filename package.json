@@ -1,7 +1,7 @@
 {
-  "name": "landing-page-small-apps",
+  "name": "lena",
   "version": "0.0.1",
-  "description": "landing-page-small-apps",
+  "description": "lena",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --config ./webpack.development.config.js --hot --open --disable-host-check",
