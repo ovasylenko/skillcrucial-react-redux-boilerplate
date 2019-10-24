@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 
 const NotFound = (props) => (

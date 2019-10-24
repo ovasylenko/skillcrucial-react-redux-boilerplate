@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import Head from './head'
 
 const Home = () => {
-  const [counter] = useState(0)
+  const [counter, setCounterNew] = useState(0)
+
   return (
     <div>
       <Head title="Hello" />
-      <div> Hello World {counter} </div>
+      <button
+        type="button"
+        onClick={() => setCounterNew(counter + 1)}
+      >
+        updateCounter
+      </button>
+      <div> Hello World Dashboard {counter} </div>
     </div>
   )
 }
