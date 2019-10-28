@@ -18,7 +18,7 @@ const Dummy = (props) => {
       <div> Hello World Dummy{counter} </div>
       <a href="/dashboard">Go to Dashboard HREF</a>
       <br />
-      <Link to="/dashboard">Go to Dashboard LINK | </Link>
+      <Link to="/dashboard">Go to Dashboard LINK</Link>
     </div>
   )
 }
