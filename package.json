@@ -81,6 +81,8 @@
     "dotenv": "^8.0.0",
     "es6-promise": "^4.2.6",
     "express": "^4.16.4",
+    "faker": "^4.1.0",
+    "fs": "^0.0.1-security",
     "git-revision-webpack-plugin": "^3.0.3",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
