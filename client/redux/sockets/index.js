@@ -1,5 +1,5 @@
 export default {
-  'connected': data => ({
+  'connected': (data) => ({
     type: 'SOCKET_CONNECTED',
     data
   }),
@@ -8,7 +8,7 @@ export default {
       JSON.parse(data)
     )
   },
-  'disconnected': data => ({
+  'disconnected': (data) => ({
     type: 'SOCKET_DISCONNECTED',
     data
   })

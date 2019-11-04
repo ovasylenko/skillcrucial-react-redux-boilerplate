@@ -1,0 +1,31 @@
+table {
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 60%;
+    margin: 20px auto;
+    position: relative;
+    thead{
+      tr {
+        height: 40px;
+        background: #36304a;
+      }
+      th {
+        color: #fff;
+        padding-left: 8px;
+      }
+    }
+    tbody{
+      tr{
+        font-size: 15px;
+        color: #808080;
+        line-height: 2;
+        font-weight: unset;
+        &:nth-child(even){
+          background-color: #f5f5f5;
+        }
+        td{padding-left: 8px;}
+      }
+    }
+  }

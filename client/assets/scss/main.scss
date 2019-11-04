@@ -1,1 +1,33 @@
 @import 'bootstrap/bootstrap.scss';
+
+table {
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 80%;
+  margin: 20px auto;
+  position: relative;
+  thead{
+    tr {
+      height: 40px;
+      background: #5f5481;
+    }
+    th {
+      color: #fff;
+      padding-left: 8px;
+    }
+  }
+  tbody{
+    tr{
+      font-size: 14px;
+      color: #797979;
+      line-height: 1,2;
+      font-weight: unset;
+      &:nth-child(even){
+        background-color: #f5f5f5;
+      }
+      td{padding-left: 8px;}
+    }
+  }
+}

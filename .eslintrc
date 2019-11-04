@@ -6,7 +6,7 @@
     "ecmaFeatures": {
       "jsx": true
     }
-  },  
+  },
   "plugins": [
     "react-hooks"
   ],
@@ -25,17 +25,17 @@
       "required": {
           "every": [ "id" ]
       }
-    }], 
+    }],
     "jsx-a11y/label-has-associated-control": [ 2, {
       "labelComponents": ["CustomInputLabel"],
       "labelAttributes": ["label"],
       "controlComponents": ["CustomInput"],
       "depth": 3
     }],
-    "max-len": ["error", {
+      "max-len": ["error", {
       "ignoreComments": true,
       "ignoreStrings": true,
-      "code": 160
+      "code": 200
     }],
     "import/no-cycle": "off",
     "react/prop-types": "off",

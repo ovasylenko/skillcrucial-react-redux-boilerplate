@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { getData } from '../redux/reducers/users'
 import Head from './head'
 
+
 const Dummy = (props) => {
   const [counter] = useState(4)
   const [pageIndex, setPageIndex] = useState(0)
@@ -41,36 +42,38 @@ const Dummy = (props) => {
       <table>
         <thead>
           <tr>
-            <td>NN</td>
-            <td>Avatar</td>
-            <td>Name</td>
-            <td>Age</td>
-            <td>Country</td>
-            <td>City</td>
-            <td>Phone</td>
-            <td>Title</td>
-            <td>Job</td>
-            <td>IP</td>
-            <td>Salary</td>
+            <th>NN</th>
+            <th>Avatar</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Phone</th>
+            <th>Title</th>
+            <th>Job</th>
+            <th>IP</th>
+            <th>Salary</th>
           </tr>
         </thead>
-        {
-          props.users.map((user, ind) => (
-            <tr>
-              <td>{pageIndex * 10 + ind + 1}</td>
-              <td><img src={user.Avatar} width="40" alt={user.Name} /></td>
-              <td>{user.Name}</td>
-              <td>{user.Age}</td>
-              <td>{user.Country}</td>
-              <td>{user.City}</td>
-              <td>{user.Phone}</td>
-              <td>{user.Title}</td>
-              <td>{user.Job}</td>
-              <td>{user.IP}</td>
-              <td>{user.Salary}</td>
-            </tr>
-          ))
-        }
+        <tbody>
+          {
+            !props.isRequesting ? props.users.map((user, ind) => (
+              <tr>
+                <td>{pageIndex * 10 + ind + 1}</td>
+                <td><img src={user.Avatar} width="40" alt={user.Name} /></td>
+                <td>{user.Name}</td>
+                <td>{user.Age}</td>
+                <td>{user.Country}</td>
+                <td>{user.City}</td>
+                <td>{user.Phone}</td>
+                <td>{user.Title}</td>
+                <td>{user.Job}</td>
+                <td>{user.IP}</td>
+                <td>{user.Salary}</td>
+              </tr>
+            )) : ''
+          }
+        </tbody>
       </table>
       <button
         type="button"
@@ -91,11 +94,11 @@ const Dummy = (props) => {
 
 Dummy.propTypes = {}
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   users: state.users.list,
   isRequesting: state.users.isRequesting
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ getData }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ getData }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dummy)

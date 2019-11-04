@@ -14,8 +14,8 @@ const PAGE_SIZE = 10
 
 let connections = [];
 const clientVariables = Object.keys(process.env)
-  .filter(key => key.indexOf('CLIENT') === 0)
-  .reduce((res, key) => (Object.assign({}, res, { [key]: process.env[key] })), {});
+  .filter((key) => key.indexOf('CLIENT') === 0)
+  .reduce((res, key) => ({ ...res, [key]: process.env[key] }), {});
 
 
 const port = process.env.PORT || 3000;
@@ -40,7 +40,7 @@ echo.on('connection', (conn) => {
   conn.on('data', async () => {});
 
   conn.on('close', () => {
-    connections = connections.filter(c => c.readyState !== 3)
+    connections = connections.filter((c) => c.readyState !== 3)
   });
 });
 
