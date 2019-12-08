@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Head from './head'
 
@@ -9,10 +9,7 @@ const Home = () => {
   return (
     <div>
       <Head title="Hello" />
-      <button
-        type="button"
-        onClick={() => setCounterNew(counter + 1)}
-      >
+      <button type="button" onClick={() => setCounterNew(counter + 1)}>
         updateCounter
       </button>
       <div> Hello World Dashboard {counter} </div>
