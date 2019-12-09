@@ -1,6 +1,4 @@
-const Html = ({
-  body
-}) => {
+const Html = ({ body }) => {
   return `
   <!DOCTYPE html>
   <html>
