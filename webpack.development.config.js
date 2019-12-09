@@ -95,10 +95,23 @@ const config = {
             options: {
               publicPath: '../',
               hmr: process.env.NODE_ENV === 'development',
-              reloadAll: true,
             },
           },
-          'css-loader',
+          { 
+            loader: 'css-loader', options: { sourceMap: false } 
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          }
         ],
       },
       {
@@ -114,11 +127,29 @@ const config = {
             options: {
               publicPath: '../',
               hmr: process.env.NODE_ENV === 'development',
-              reloadAll: true,
             },
           },
-          'css-loader',
-          'sass-loader',
+          {
+            loader: 'css-loader', options: { sourceMap: false }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            query: {
+              sourceMap: false,
+            }
+          }
         ],
       },
       {
