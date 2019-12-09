@@ -2,16 +2,26 @@ const { resolve } = require('path');
 require('dotenv').config()
 
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path')
+const glob = require('glob');
+
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const gitRevisionPlugin = new GitRevisionPlugin();
 const StringReplacePlugin = require("string-replace-webpack-plugin");
 const uuidv4 = require('uuid/v4')
 
+const PATHS = {
+  src: path.join(__dirname, 'dist/assets')
+}
+
 const config = {
   entry: [
-    './main.js',    
+    './main.js',
     './assets/scss/main.scss'
   ],
   resolve: {
@@ -32,9 +42,25 @@ const config = {
       maxEntrypointSize: 512000,
       maxAssetSize: 512000
   },
-  module: {      
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    },
+    minimizer: [
+      new TerserJSPlugin({}),
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  },
+  module: {
     rules: [
-      { 
+      {
         test: /.html$/,
         loader: StringReplacePlugin.replace({
             replacements: [
@@ -46,8 +72,8 @@ const config = {
                 }
             ]
         })
-    },      
-    { 
+    },
+    {
       test: /\.js$/,
       loader: StringReplacePlugin.replace({
           replacements: [
@@ -59,7 +85,7 @@ const config = {
             }
           ]
       })
-  },      
+  },
       {
         enforce: "pre",
         test: /\.js$/,
@@ -72,14 +98,18 @@ const config = {
           'babel-loader',
         ],
         exclude: /node_modules/,
-      },      
+      },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [ 'css-loader' ],
-          publicPath: '../_build'
-        }),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../_build'
+            },
+          },
+          'css-loader',
+        ],
       },
       {
         test: /\.txt$/i,
@@ -88,19 +118,16 @@ const config = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'sass-loader',
-              query: {
-                sourceMap: false,
-              },
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
             },
-          ],
-          publicPath: '../'
-        }),
+          },
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -192,7 +219,10 @@ const config = {
       },
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),    
-    new ExtractTextPlugin({ filename: 'css/main.css', disable: false, allChunks: true }),
+    new MiniCssExtractPlugin({ filename: 'css/main.css', disable: false, allChunks: true }),
+    new PurgecssPlugin({
+      paths: glob.sync(`${PATHS.src}/**/*`,  { nodir: true }),
+    }),
     new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
     new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
 
