@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const path = require('path');
 require('dotenv').config()
 
 const webpack = require('webpack');
@@ -16,7 +16,7 @@ const StringReplacePlugin = require("string-replace-webpack-plugin");
 const uuidv4 = require('uuid/v4')
 
 const PATHS = {
-  src: path.join(__dirname, 'dist/assets')
+  src: path.join(__dirname, 'client')
 }
 
 const config = {
@@ -31,11 +31,14 @@ const config = {
   },
   output: {
     filename: 'js/bundle.js',
-    path: resolve(__dirname, 'dist/assets'),
+    path: path.resolve(__dirname, 'dist/assets'),
     publicPath: '',
   },
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  },
   mode: 'production',
-  context: resolve(__dirname, 'client'),
+  context: path.resolve(__dirname, 'client'),
   devtool: false,
   performance: {
       hints: false,
@@ -103,10 +106,7 @@ const config = {
         test: /\.css$/,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../_build'
-            },
+            loader: MiniCssExtractPlugin.loader
           },
           { 
             loader: 'css-loader', options: { sourceMap: false } 
@@ -246,7 +246,7 @@ const config = {
       test: /\.js$/,
       options: {
         eslint: {
-          configFile: resolve(__dirname, '.eslintrc'),
+          configFile: path.resolve(__dirname, '.eslintrc'),
           cache: false,
         }
       },

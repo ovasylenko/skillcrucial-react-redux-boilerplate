@@ -4,7 +4,7 @@
   "description": "landing-page-small-apps",
   "main": "index.js",
   "engines": {
-    "node": "12.13.1"
+    "node": ">=10.16.3"
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development --config ./webpack.development.config.js --hot --open --disable-host-check",
@@ -21,8 +21,8 @@
     "coverage": "jest --coverage",
     "next:build": "next",
     "watch:server": "nodemon start.js --ignore \"*.hot-update.json\" --ignore \"js/bundle.js\" --ignore \"css/main.css\" --watch server --watch client --exec \"npm run lint:server && node\"",
-    "build:prod": " webpack --config webpack.production.frontend.config.js --progress --profile --colors",
-    "heroku-postbuild": " webpack --config webpack.production.frontend.config.js --progress --profile --colors"
+    "build:prod": "NODE_ENV=production webpack --config webpack.production.frontend.config.js --progress --profile --colors",
+    "heroku-postbuild": "yarn run build:prod"
   },
   "author": "",
   "license": "MIT",
@@ -138,12 +138,15 @@
     "node-hot-loader": "^1.17.6",
     "node-sass": "^4.13.0",
     "nodemon": "^2.0.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "purgecss-webpack-plugin": "^1.6.0",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "16.12.0",
     "regenerator-runtime": "^0.13.3",
     "rimraf": "3.0.0",
     "sass-loader": "8.0.0",
     "style-loader": "1.0.1",
+    "terser-webpack-plugin": "^2.2.2",
     "url-loader": "3.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
