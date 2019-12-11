@@ -12,23 +12,35 @@ const NotFound = (props) => (
       <p className="lead text-gray-800 mb-5">Page Not Found</p>
       <p className="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
       <br />
-      <button className="btn btn-secondary btn-lg" type="button" tabIndex="0" onClick={props.goRoot}> Back to Dashboard</button>
+      <button
+        className="btn btn-secondary btn-lg"
+        type="button"
+        tabIndex="0"
+        onClick={props.goRoot}
+      >
+        {' '}
+        Back to Dashboard
+      </button>
     </div>
   </div>
-);
+)
 
 NotFound.propTypes = {
   goRoot: PropTypes.func
 }
 
 NotFound.defaultProps = {
-  goRoot: () => {},
+  goRoot: () => {}
 }
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  goRoot: () => push('/')
-}, dispatch)
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      goRoot: () => push('/')
+    },
+    dispatch
+  )
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotFound)

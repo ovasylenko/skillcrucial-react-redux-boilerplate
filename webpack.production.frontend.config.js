@@ -1,17 +1,27 @@
-const { resolve } = require('path');
+const path = require('path');
 require('dotenv').config()
 
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path')
+const glob = require('glob');
+
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const gitRevisionPlugin = new GitRevisionPlugin();
 const StringReplacePlugin = require("string-replace-webpack-plugin");
 const uuidv4 = require('uuid/v4')
 
+const PATHS = {
+  src: path.join(__dirname, 'client')
+}
+
 const config = {
   entry: [
-    './main.js',    
+    './main.js',
     './assets/scss/main.scss'
   ],
   resolve: {
@@ -21,20 +31,39 @@ const config = {
   },
   output: {
     filename: 'js/bundle.js',
-    path: resolve(__dirname, 'dist/assets'),
+    path: path.resolve(__dirname, 'dist/assets'),
     publicPath: '',
   },
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  },
   mode: 'production',
-  context: resolve(__dirname, 'client'),
+  context: path.resolve(__dirname, 'client'),
   devtool: false,
   performance: {
       hints: false,
       maxEntrypointSize: 512000,
       maxAssetSize: 512000
   },
-  module: {      
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    },
+    minimizer: [
+      new TerserJSPlugin({}),
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  },
+  module: {
     rules: [
-      { 
+      {
         test: /.html$/,
         loader: StringReplacePlugin.replace({
             replacements: [
@@ -46,8 +75,8 @@ const config = {
                 }
             ]
         })
-    },      
-    { 
+    },
+    {
       test: /\.js$/,
       loader: StringReplacePlugin.replace({
           replacements: [
@@ -59,7 +88,7 @@ const config = {
             }
           ]
       })
-  },      
+  },
       {
         enforce: "pre",
         test: /\.js$/,
@@ -72,14 +101,29 @@ const config = {
           'babel-loader',
         ],
         exclude: /node_modules/,
-      },      
+      },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [ 'css-loader' ],
-          publicPath: '../_build'
-        }),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          { 
+            loader: 'css-loader', options: { sourceMap: false } 
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          }
+        ],
       },
       {
         test: /\.txt$/i,
@@ -88,19 +132,35 @@ const config = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'sass-loader',
-              query: {
-                sourceMap: false,
-              },
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
             },
-          ],
-          publicPath: '../'
-        }),
+          },
+          {
+            loader: 'css-loader', options: { sourceMap: false }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            query: {
+              sourceMap: false,
+            }
+          }
+        ],
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -186,13 +246,16 @@ const config = {
       test: /\.js$/,
       options: {
         eslint: {
-          configFile: resolve(__dirname, '.eslintrc'),
+          configFile: path.resolve(__dirname, '.eslintrc'),
           cache: false,
         }
       },
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),    
-    new ExtractTextPlugin({ filename: 'css/main.css', disable: false, allChunks: true }),
+    new MiniCssExtractPlugin({ filename: 'css/main.css', disable: false, allChunks: true }),
+    new PurgecssPlugin({
+      paths: glob.sync(`${PATHS.src}/**/*`,  { nodir: true }),
+    }),
     new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
     new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
 
