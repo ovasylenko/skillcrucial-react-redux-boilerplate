@@ -1,9 +1,13 @@
 const path = require('path');
 require('dotenv').config();
+
 const webpack = require('webpack');
-const glob = require('glob')
+const path = require('path')
+const glob = require('glob');
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const PurgecssPlugin = require('purgecss-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin')
+
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 require('babel-polyfill')
@@ -57,7 +61,18 @@ const config = {
       },
     ],
   },
-
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  },
   module: {
     rules: [
       {
@@ -79,10 +94,25 @@ const config = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: true,
+              publicPath: '../',
+              hmr: process.env.NODE_ENV === 'development',
             },
           },
-          'css-loader',
+          { 
+            loader: 'css-loader', options: { sourceMap: false } 
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          }
         ],
       },
       {
@@ -97,12 +127,30 @@ const config = {
             loader: MiniCssExtractPlugin.loader,
             options: {
               publicPath: '../',
-              hmr: true,
+              hmr: process.env.NODE_ENV === 'development',
             },
           },
-          'css-loader',
-          //'postcss-loader',
-          'sass-loader',
+          {
+            loader: 'css-loader', options: { sourceMap: false }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: (loader) => [
+                require('postcss-import')({ root: loader.resourcePath }),
+                require('postcss-preset-env')(),
+                require('autoprefixer')(),
+                require('cssnano')()
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            query: {
+              sourceMap: false,
+            }
+          }
         ],
       },
       {
