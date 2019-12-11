@@ -1,10 +1,7 @@
 const path = require('path');
 require('dotenv').config()
-
 const webpack = require('webpack');
-const path = require('path')
 const glob = require('glob');
-
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
