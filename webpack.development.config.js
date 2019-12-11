@@ -1,13 +1,9 @@
 const path = require('path');
 require('dotenv').config();
-
 const webpack = require('webpack');
-const path = require('path')
 const glob = require('glob');
-
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin')
-
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 require('babel-polyfill')
@@ -249,8 +245,8 @@ const config = {
     }),
     new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
     new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
+    new CopyWebpackPlugin([{ from: 'assets/js', to: 'js' }]),
     new CopyWebpackPlugin([{ from: 'index.html', to: 'index.html' }]),
-
     new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
     new CopyWebpackPlugin([{ from: 'assets/manifest.json', to: 'manifest.json' }]),
     new WebpackShellPlugin({ onBuildEnd: ['npm run watch:server'] }),
