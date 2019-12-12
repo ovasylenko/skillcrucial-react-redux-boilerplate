@@ -9,7 +9,7 @@ const Dummy = () => {
   return (
     <div>
       <Head title="Hello" />
-      <div> Hello World {counter} </div>
+      <div> Hello World! {counter} </div>
     </div>
   )
 }

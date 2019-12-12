@@ -20,7 +20,7 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "next:build": "next",
-    "watch:server": "nodemon start.js --ignore \"*.hot-update.json\" --ignore \"js/bundle.js\" --ignore \"css/main.css\" --watch server --watch client --exec \"npm run lint:server && node\"",
+    "watch:server": "nodemon start.js --ignore \"*.hot-update.json\" --ignore \"js/bundle.js\" --ignore \"css/main.css\" --watch server --watch client --exec \"npm run lint:server  --scripts-prepend-node-path && node\"",
     "build:prod": "set NODE_ENV=production webpack --config webpack.production.config.js --progress --profile --colors",
     "heroku-postbuild": "yarn run build:prod",
     "storybook": "start-storybook -p 6006",
