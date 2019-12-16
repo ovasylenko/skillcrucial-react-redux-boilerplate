@@ -6,3 +6,4 @@ services:
       dockerfile: docker/DEV.Dockerfile
     ports:
       - 3000:3000
+    command: yarn run dev
