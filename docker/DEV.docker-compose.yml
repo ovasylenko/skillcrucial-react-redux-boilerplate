@@ -2,11 +2,10 @@ version: "3.7"
 services:
   node:
     build:
-      context: ../
+      context: ../.
       dockerfile: docker/DEV.Dockerfile
     ports:
       - 3000:3000
     volumes:
-      - /client:/app/client
-      - /server:/app/server
-      - /config:/app/config
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
