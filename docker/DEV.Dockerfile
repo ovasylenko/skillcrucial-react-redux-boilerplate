@@ -1,6 +1,6 @@
 FROM node
-# CMD [ "yarn","run","dev" ]
+CMD [ "yarn","dev" ]
 WORKDIR /app
-# ADD package*.json ./
+ADD ./*.* ./
+ADD webpack.development.config.js ./
 RUN npm config set scripts-prepend-node-path true && yarn install
-# COPY . .
