@@ -1,6 +1,7 @@
-FROM node
+FROM node:alpine
 CMD [ "yarn","dev" ]
 WORKDIR /app
 COPY package*.json ./
-RUN npm config set scripts-prepend-node-path true && yarn install
-COPY . .
+RUN yarn install
+# npm config set scripts-prepend-node-path true &&
+# COPY . .
