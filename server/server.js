@@ -6,7 +6,7 @@ import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
 
 import cookieParser from 'cookie-parser'
-import Html from '../client/html'
+import Html from '../dist/html'
 import Variables from '../client/variables'
 
 let connections = []
