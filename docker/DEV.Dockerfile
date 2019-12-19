@@ -1,5 +1,5 @@
 FROM node:alpine
-# CMD [ "yarn","dev" ]
+CMD yarn dev
 WORKDIR /app
 COPY package*.json ./
 RUN yarn install

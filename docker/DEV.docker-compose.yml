@@ -5,11 +5,9 @@ services:
       context: ../
       dockerfile: docker/DEV.Dockerfile
     ports:
-      - 3000:3000
-      - 3001:3001
+      - 3000:3001
     restart: always
-    container_name: docker-node-DEV
+    container_name: node-dev
     volumes:
-      - ./:/app
+      - ../.:/app:rw
       - /app/node_modules
-    command: yarn run dev
