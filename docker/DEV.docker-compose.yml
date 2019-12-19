@@ -2,7 +2,7 @@ version: "3.7"
 services:
   node:
     build:
-      context: ../.
+      context: ../
       dockerfile: docker/DEV.Dockerfile
     ports:
       - 3000:3000
@@ -10,4 +10,6 @@ services:
     restart: always
     container_name: docker-node-DEV
     volumes:
-      - .:/app
+      - ./:/app
+      - /app/node_modules
+    command: yarn run dev
