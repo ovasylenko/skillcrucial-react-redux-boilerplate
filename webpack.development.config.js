@@ -7,6 +7,7 @@ const PurgecssPlugin = require('purgecss-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const WebpackShellPlugin = require('webpack-shell-plugin')
 require('babel-polyfill')
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
 const PATHS = {
   src: path.join(__dirname, 'client')
@@ -79,12 +80,14 @@ const config = {
       },
       {
         test: /\.js$/,
-        loaders: ['babel-loader'],
+        include: path.resolve(__dirname, 'client'),
+        loaders: ['thread-loader', 'babel-loader'],
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
         use: [
+          'thread-loader',
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -221,11 +224,14 @@ const config = {
     new CopyWebpackPlugin([{ from: 'assets/manifest.json', to: 'manifest.json' }]),
     new CopyWebpackPlugin([{ from: 'assets/robots.txt', to: 'robots.txt' }]),
 
-    new WebpackShellPlugin({ onBuildEnd: ['npm run watch:server'] }),
+    new WebpackShellPlugin({ onBuildStart: ['npm run watch:server'] }),
 
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development'
     }),
+
+    new HardSourceWebpackPlugin(),
+
     new webpack.HotModuleReplacementPlugin()
   ]
 }
