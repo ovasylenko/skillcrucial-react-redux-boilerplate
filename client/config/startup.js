@@ -1,18 +1,13 @@
-/* eslint-disable camelcase */
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-// const cookies = new Cookies();
+const Startup = (props) => {
+  useEffect(() => {})
 
-class Startup extends React.Component {
-  UNSAFE_componentWillMount() {}
-
-  render() {
-    return this.props.children
-  }
+  return <>{props.children}</>
 }
 
 Startup.propTypes = {
