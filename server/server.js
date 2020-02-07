@@ -7,12 +7,8 @@ import sockjs from 'sockjs'
 
 import cookieParser from 'cookie-parser'
 import Html from '../dist/html'
-import Variables from '../client/variables'
 
 let connections = []
-const clientVariables = Object.keys(process.env)
-  .filter((key) => key.indexOf('CLIENT') === 0)
-  .reduce((res, key) => ({ ...res, [key]: process.env[key] }), {})
 
 const port = process.env.PORT || 3000
 const server = express()
@@ -40,22 +36,13 @@ echo.on('connection', (conn) => {
   })
 })
 
-server.get('/js/variables.js', (req, res) => {
-  res.send(
-    Variables({
-      clientVariables
-    })
-  )
-})
-
 server.get('/', (req, res) => {
   // const body = renderToString(<Root />);
   const title = 'Server side Rendering'
   res.send(
     Html({
       body: '',
-      title,
-      clientVariables
+      title
     })
   )
 })
@@ -68,8 +55,7 @@ server.get('/*', (req, res) => {
   return res.send(
     Html({
       body: '',
-      initialState,
-      clientVariables
+      initialState
     })
   )
 })

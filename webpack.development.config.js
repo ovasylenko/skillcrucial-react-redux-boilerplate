@@ -1,17 +1,10 @@
 const path = require('path')
 require('dotenv').config()
 const webpack = require('webpack')
-const glob = require('glob')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const PurgecssPlugin = require('purgecss-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const WebpackShellPlugin = require('webpack-shell-plugin')
-require('babel-polyfill')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
-
-const PATHS = {
-  src: path.join(__dirname, 'client')
-}
 
 const config = {
   devtool: 'cheap-module-eval-source-map',
@@ -106,6 +99,7 @@ const config = {
               plugins: (loader) => [
                 require('postcss-import')({ root: loader.resourcePath }),
                 require('postcss-preset-env')(),
+                require('tailwindcss'),
                 require('autoprefixer')(),
                 require('cssnano')()
               ]
@@ -139,6 +133,7 @@ const config = {
               plugins: (loader) => [
                 require('postcss-import')({ root: loader.resourcePath }),
                 require('postcss-preset-env')(),
+                require('tailwindcss'),
                 require('autoprefixer')(),
                 require('cssnano')()
               ]
@@ -213,9 +208,6 @@ const config = {
       chunkFilename: '[id].css',
       ignoreOrder: false
     }),
-    new PurgecssPlugin({
-      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-    }),
     new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
     new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
     new CopyWebpackPlugin([{ from: 'index.html', to: 'index.html' }]),
@@ -229,7 +221,12 @@ const config = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development'
     }),
-
+    new webpack.DefinePlugin(
+      Object.keys(process.env).reduce(
+        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
+        {}
+      )
+    ),
     new HardSourceWebpackPlugin(),
 
     new webpack.HotModuleReplacementPlugin()

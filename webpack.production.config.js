@@ -7,8 +7,6 @@ const PurgecssPlugin = require('purgecss-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const gitRevisionPlugin = new GitRevisionPlugin()
 const uuidv4 = require('uuid/v4')
 
 const PATHS = {
@@ -79,6 +77,7 @@ const config = {
               plugins: (loader) => [
                 require('postcss-import')({ root: loader.resourcePath }),
                 require('postcss-preset-env')(),
+                require('tailwindcss'),
                 require('autoprefixer')(),
                 require('cssnano')()
               ]
@@ -111,6 +110,7 @@ const config = {
               plugins: (loader) => [
                 require('postcss-import')({ root: loader.resourcePath }),
                 require('postcss-preset-env')(),
+                require('tailwindcss'),
                 require('autoprefixer')(),
                 require('cssnano')()
               ]
@@ -221,6 +221,12 @@ const config = {
         }
       }
     ]),
+    new webpack.DefinePlugin(
+      Object.keys(process.env).reduce(
+        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
+        {}
+      )
+    ),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
     })
