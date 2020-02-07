@@ -1,4 +1,8 @@
-node_modules
 .gitignore
 npm-debug.log
 .env
+docker
+.start-storybook
+.gitlab-ci.yml
+stores
+node_modules

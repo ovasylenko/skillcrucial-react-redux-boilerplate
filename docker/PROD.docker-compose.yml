@@ -4,7 +4,7 @@ services:
     build:
       target: nodeServer
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/PROD.Dockerfile
     restart: always
     networks:
       - internal
@@ -15,7 +15,7 @@ services:
     build:
       target: webServer
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/PROD.Dockerfile
     restart: always
     ports:
       - 80:80

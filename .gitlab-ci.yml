@@ -9,9 +9,9 @@ stages:
 Test:
   stage: test
   script:
-    - docker-compose -f docker/docker-compose.yml build --compress --parallel
-    - docker-compose -f docker/docker-compose.yml run node yarn test
-    - docker-compose -f docker/docker-compose.yml rm -f -s -v
+    - docker-compose -f docker/PROD.docker-compose.yml build --compress --parallel
+    - docker-compose -f docker/PROD.docker-compose.yml run node yarn test
+    - docker-compose -f docker/PROD.docker-compose.yml rm -f -s -v
   tags:
     - bash
   only:
@@ -20,7 +20,7 @@ Test:
 Build&Run:
   stage: run
   script:
-    - docker-compose -f docker/docker-compose.yml -p ${CI_COMMIT_REF_SLUG}_${PROJECT_PREFIX}  up -d --build
+    - docker-compose -f docker/PROD.docker-compose.yml -p ${CI_COMMIT_REF_SLUG}_${PROJECT_PREFIX}  up -d --build
   tags:
     - bash
   only:

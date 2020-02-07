@@ -135,3 +135,15 @@ yarn run lint:server
 ```
 
 Will analyse only  `server/**/**.js` files
+
+#### Docker
+Nginx web server working on 443, 80 ports on localhost
+
+```run production
+docker-compose -f .\docker\PROD.docker-compose.yml up (Options: --build for build, -d to detach )
+docker-compose -f .\docker\PROD.docker-compose.yml down (To stop contaiters)
+```
+```run develop
+docker-compose -f .\docker\DEV.docker-compose.yml up (Options: --build for build, -d to detach )
+docker-compose -f .\docker\DEV.docker-compose.yml down (To stop contaiters)
+```
