@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  node:
+    build:
+      context: ../
+      dockerfile: docker/DEV.Dockerfile
+    ports:
+      - 3000:3001
+    restart: always
+    container_name: node-dev
+    volumes:
+      - ../.:/app:rw
+      - /app/node_modules

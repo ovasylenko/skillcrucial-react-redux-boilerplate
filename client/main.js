@@ -6,9 +6,6 @@ import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import Root from './config/root'
 
-require('es6-promise').polyfill()
-require('isomorphic-fetch')
-
 const target = document.getElementById('root')
 
 const render = (Component) => {

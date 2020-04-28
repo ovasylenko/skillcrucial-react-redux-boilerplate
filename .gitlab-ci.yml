@@ -1,0 +1,37 @@
+variables:
+    REVIEW_HOST: ${CI_COMMIT_REF_SLUG}.${PROJECT_PREFIX}
+    DOCKER_NODE: TEST_mrtolerantru_node
+stages:
+  - test
+  - run
+  - prod
+
+Test:
+  stage: test
+  script:
+    - docker-compose -f docker/PROD.docker-compose.yml build --compress --parallel
+    - docker-compose -f docker/PROD.docker-compose.yml run node yarn test
+    - docker-compose -f docker/PROD.docker-compose.yml rm -f -s -v
+  tags:
+    - bash
+  only:
+    - merge_requests
+
+Build&Run:
+  stage: run
+  script:
+    - docker-compose -f docker/PROD.docker-compose.yml -p ${CI_COMMIT_REF_SLUG}_${PROJECT_PREFIX}  up -d --build
+  tags:
+    - bash
+  only:
+    - develop
+    - master
+
+# Prod:
+#   stage: prod
+#   script:
+#     docker-compose -f docker/docker-compose-production.yml -p ${CI_COMMIT_REF_SLUG}_${PROJECT_PREFIX}  up -d --build 
+#   tags:
+#     - bash
+#   only:
+#     - production
