@@ -74,13 +74,12 @@ const config = {
       {
         test: /\.js$/,
         include: path.resolve(__dirname, 'client'),
-        loaders: ['thread-loader', 'babel-loader'],
+        loaders: ['babel-loader'],
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
         use: [
-          'thread-loader',
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
