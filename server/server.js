@@ -1,6 +1,7 @@
 /* eslint-disable import/no-duplicates */
 import express from 'express'
 import path from 'path'
+import axios from 'axios'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
@@ -20,6 +21,18 @@ server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit
 server.use(bodyParser.json({ limit: '50mb', extended: true }))
 
 server.use(cookieParser())
+
+server.get('/api/v1/users', async (req, res) => {
+  const { data:users } = await axios('https://jsonplaceholder.typicode.com/users')
+  res.json({users})
+})
+
+server.get('/api/v1/users/take/:number', async (req, res) => {
+  const {number} = req.params
+
+  const { data:users } = await axios('https://jsonplaceholder.typicode.com/users')
+  res.json(users.slice(0, +number))
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)
