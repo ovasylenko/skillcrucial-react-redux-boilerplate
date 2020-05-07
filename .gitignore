@@ -66,3 +66,4 @@ dist
 */.DS_Store
 yarn-error.log
 *.csv
+/server/users.json

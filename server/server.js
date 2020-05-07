@@ -9,6 +9,8 @@ import sockjs from 'sockjs'
 import cookieParser from 'cookie-parser'
 import Html from '../client/html'
 
+const { readFile, writeFile, unlink } = require('fs').promises
+
 let connections = []
 
 const port = process.env.PORT || 3000
@@ -20,18 +22,90 @@ server.use(express.static(path.resolve(__dirname, '../dist/assets')))
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 server.use(bodyParser.json({ limit: '50mb', extended: true }))
 
-server.use(cookieParser())
-
-server.get('/api/v1/users', async (req, res) => {
-  const { data:users } = await axios('https://jsonplaceholder.typicode.com/users')
-  res.json({users})
+server.use((req, res, next) => {
+  res.set('x-skillcrucial-user', '38128149-efce-4a54-8111-21e4a765e6ef')
+  res.set('Access-Control-Expose-Headers', 'X-SKILLCRUCIAL-USER')
+  next()
 })
 
-server.get('/api/v1/users/take/:number', async (req, res) => {
-  const {number} = req.params
+server.use(cookieParser())
 
-  const { data:users } = await axios('https://jsonplaceholder.typicode.com/users')
-  res.json(users.slice(0, +number))
+server.get('/api/v1/users', (req, res) => {
+  readFile(`${__dirname}/users.json`, { encoding: 'utf8' })
+    .then((data) => res.json(JSON.parse(data)))
+    .catch(async (err) => {
+      console.log(err)
+      const users = await axios('https://jsonplaceholder.typicode.com/users')
+      .then((data) => data.data)
+      writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
+        encoding: 'utf8'
+      }) // .then((data) => console.log(data))
+      res.json(users)
+    })
+})
+
+server.post('/api/v1/users/', async (req, res) => {
+  readFile(`${__dirname}/users.json`, {
+    encoding: 'utf8'
+  })
+    .then((data) => {
+      const users = JSON.parse(data).concat({ id: `${JSON.parse(data).length + 1}` * 1 })
+      writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
+        encoding: 'utf8'
+      })
+      res.json({ status: 'success', id: `${JSON.parse(data).length + 1}` * 1 })
+    })
+    .catch(async (err) => {
+      console.log(err)
+    })
+  // res.json('test')
+})
+
+server.patch('/api/v1/users/:userId', (req, res) => {
+  const id = req.params
+  readFile(`${__dirname}/users.json`, {
+    encoding: 'utf8'
+  })
+    .then((data) => {
+      let users = JSON.parse(data)
+      users = users.reduce((acc, rec) => {
+        if (rec.id === 1 * id.userId) return [...acc, rec]
+        return [...acc, rec]
+      }, [])
+      writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
+        encoding: 'utf8'
+      })
+      res.json({ status: 'success', id: 1 * id.userId })
+    })
+    .catch(async (err) => {
+      console.log(err)
+    })
+})
+
+server.delete('/api/v1/users/:userId', (req, res) => {
+  const id = req.params
+  readFile(`${__dirname}/users.json`, {
+    encoding: 'utf8'
+  })
+    .then((data) => {
+      let users = JSON.parse(data)
+      users = users.reduce((acc, rec) => {
+        if (rec.id === 1 * id.userId) return acc
+        return [...acc, rec]
+      }, [])
+      writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
+        encoding: 'utf8'
+      })
+      res.json({ status: 'success', id: 1 * id.userId })
+    })
+    .catch(async (err) => {
+      console.log(err)
+    })
+})
+
+server.delete('/api/v1/users/', (req, res) => {
+  unlink(`${__dirname}/users.json`)
+  res.json({ status: 'succesfully deleted'})
 })
 
 server.use('/api/', (req, res) => {
