@@ -49,11 +49,13 @@ server.post('/api/v1/users/', async (req, res) => {
     encoding: 'utf8'
   })
     .then((data) => {
-      const users = JSON.parse(data).concat({ id: `${JSON.parse(data).length + 1}` * 1 })
+      const arr = JSON.parse(data)
+      const lastId = arr[arr.length - 1].id
+      const users = arr.concat({ id: `${lastId + 1}` * 1 })
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       })
-      res.json({ status: 'success', id: `${JSON.parse(data).length + 1}` * 1 })
+      res.json({ status: 'success', id: `${lastId + 1}` * 1 })
     })
     .catch(async (err) => {
       console.log(err)
