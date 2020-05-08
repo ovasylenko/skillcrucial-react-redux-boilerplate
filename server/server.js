@@ -46,23 +46,28 @@ server.get('/api/v1/users', (req, res) => {
 })
 
 server.post('/api/v1/users/', async (req, res) => {
+  // res.json(req.body)
+  // console.log(req.params)
+  let newUser = req.body
   readFile(`${__dirname}/users.json`, { encoding: 'utf8' })
-  .then((data) => {
-    const arr = JSON.parse(data)
-    const lastId = arr[arr.length - 1].id
-    const users = arr.concat({ id: `${lastId + 1}` * 1 })
-    writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
-      encoding: 'utf8'
+    .then((data) => {
+      const arr = JSON.parse(data)
+      const lastId = arr[arr.length - 1].id
+      newUser = { id: `${lastId + 1}` * 1, ...newUser }
+      const users = arr.concat(newUser)
+      writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
+        encoding: 'utf8'
+      })
+      res.json({ status: 'success', id: `${lastId + 1}` * 1 })
     })
-    res.json({ status: 'success', id: `${lastId + 1}` * 1 })
-  })
     .catch(async () => {
       // console.log(err)
       let users = await axios('https://jsonplaceholder.typicode.com/users').then(
         (data) => data.data
       )
       const lastId = users[users.length - 1].id
-      users = users.concat({ id: `${lastId + 1}` * 1 })
+      newUser = { id: `${lastId + 1}` * 1, ...newUser }
+      users = users.concat(newUser)
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       }) // .then((data) => console.log(data))
