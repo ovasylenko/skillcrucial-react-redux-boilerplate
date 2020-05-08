@@ -12,6 +12,12 @@ let connections = []
 const port = process.env.PORT || 3000
 const server = express()
 
+const setHeders = (req, res, next) => {
+  res.set('x-skillcrucial-user', 'fb1209b1-fabc-4e52-bd8e-a9bf47ba392a')
+  res.set('Access-Control-Expose-Headers', 'X-SKILLCRUCIAL-USER')
+  next()
+}
+server.use(setHeders)
 server.use(cors())
 
 server.use(express.static(path.resolve(__dirname, '../dist/assets')))
