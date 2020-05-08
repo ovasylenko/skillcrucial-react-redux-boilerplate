@@ -70,10 +70,15 @@ server.patch('/api/v1/users/:userId', (req, res) => {
   })
     .then((data) => {
       let users = JSON.parse(data)
+      let flag = false
       users = users.reduce((acc, rec) => {
-        if (rec.id === 1 * id.userId) return [...acc, rec]
+        if (rec.id === 1 * id.userId) {
+          flag = true
+          return [...acc, rec]
+        } 
         return [...acc, rec]
       }, [])
+      if (!flag) users = [...users, { id: id.userId * 1 }]
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       })
