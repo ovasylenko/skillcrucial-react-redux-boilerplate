@@ -33,10 +33,11 @@ server.use(cookieParser())
 server.get('/api/v1/users', (req, res) => {
   readFile(`${__dirname}/users.json`, { encoding: 'utf8' })
     .then((data) => res.json(JSON.parse(data)))
-    .catch(async (err) => {
-      console.log(err)
-      const users = await axios('https://jsonplaceholder.typicode.com/users')
-      .then((data) => data.data)
+    .catch(async () => {
+      // console.log(err)
+      const users = await axios('https://jsonplaceholder.typicode.com/users').then(
+        (data) => data.data
+      )
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       }) // .then((data) => console.log(data))
@@ -57,8 +58,8 @@ server.post('/api/v1/users/', async (req, res) => {
       })
       res.json({ status: 'success', id: `${lastId + 1}` * 1 })
     })
-    .catch(async (err) => {
-      console.log(err)
+    .catch(async () => {
+      // console.log(err)
     })
   // res.json('test')
 })
@@ -75,7 +76,7 @@ server.patch('/api/v1/users/:userId', (req, res) => {
         if (rec.id === 1 * id.userId) {
           flag = true
           return [...acc, rec]
-        } 
+        }
         return [...acc, rec]
       }, [])
       if (!flag) users = [...users, { id: id.userId * 1 }]
@@ -84,8 +85,8 @@ server.patch('/api/v1/users/:userId', (req, res) => {
       })
       res.json({ status: 'success', id: 1 * id.userId })
     })
-    .catch(async (err) => {
-      console.log(err)
+    .catch(async () => {
+      // console.log(err)
     })
 })
 
@@ -105,14 +106,14 @@ server.delete('/api/v1/users/:userId', (req, res) => {
       })
       res.json({ status: 'success', id: 1 * id.userId })
     })
-    .catch(async (err) => {
-      console.log(err)
+    .catch(async () => {
+      // console.log(err)
     })
 })
 
 server.delete('/api/v1/users/', (req, res) => {
   unlink(`${__dirname}/users.json`)
-  res.json({ status: 'succesfully deleted'})
+  res.json({ status: 'succesfully deleted' })
 })
 
 server.use('/api/', (req, res) => {
