@@ -44,7 +44,7 @@ server.use(bodyParser.json({ limit: '50mb', extended: true }))
 
 server.use(cookieParser())
 
-server.get('/api/v1/users/', async (req, res) => {
+server.get('', async (req, res) => {
   const users = await fileRead()
   res.json(users)
 })
