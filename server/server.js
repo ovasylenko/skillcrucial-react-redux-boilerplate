@@ -100,11 +100,11 @@ server.delete('/api/v1/users/', async (req, res) => {
   res.end()
 })
 
-server.get('/api/v1/users/take/:number', async (req, res) => {
-  const { number } = req.params
-  const { data: users } = await axios('https://jsonplaceholder.typicode.com/users')
-  res.json(users.slice(0, +number))
-})
+// server.get('/api/v1/users/take/:number', async (req, res) => {
+//   const { number } = req.params
+//   const { data: users } = await axios('https://jsonplaceholder.typicode.com/users')
+//   res.json(users.slice(0, +number))
+// })
 
 server.use('/api/', (req, res) => {
   res.status(404)
