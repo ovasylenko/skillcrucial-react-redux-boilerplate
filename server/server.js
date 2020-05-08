@@ -82,9 +82,7 @@ server.patch('/api/v1/users/:userId', (req, res) => {
   const id = req.params
   let newUser = req.body
   newUser = { id: id.userId * 1, ...newUser }
-  readFile(`${__dirname}/users.json`, {
-    encoding: 'utf8'
-  })
+  readFile(`${__dirname}/users.json`, { encoding: 'utf8' })
     .then((data) => {
       let users = JSON.parse(data)
       let flag = false
@@ -95,7 +93,7 @@ server.patch('/api/v1/users/:userId', (req, res) => {
         }
         return it
       }, [])
-      if (!flag) users = [...users, ...newUser]
+      if (!flag) users = [...users, newUser]
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       })
