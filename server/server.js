@@ -4,7 +4,6 @@ import path from 'path'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
-
 import cookieParser from 'cookie-parser'
 import Html from '../client/html'
 
