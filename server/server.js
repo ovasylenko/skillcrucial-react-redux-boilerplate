@@ -53,12 +53,12 @@ server.post('/api/v1/users/', async (req, res) => {
     .then((data) => {
       const arr = JSON.parse(data)
       const lastId = arr[arr.length - 1].id
-      newUser = { id: `${lastId + 1}` * 1, ...newUser }
+      newUser = { id: `${lastId * 1 + 1}` * 1, ...newUser }
       const users = arr.concat(newUser)
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       })
-      res.json({ status: 'success', id: `${lastId + 1}` * 1 })
+      res.json({ status: 'success', id: `${lastId * 1 + 1}` * 1 })
     })
     .catch(async () => {
       // console.log(err)
@@ -66,12 +66,12 @@ server.post('/api/v1/users/', async (req, res) => {
         (data) => data.data
       )
       const lastId = users[users.length - 1].id
-      newUser = { id: `${lastId + 1}` * 1, ...newUser }
+      newUser = { id: `${lastId * 1 + 1}` * 1, ...newUser }
       users = users.concat(newUser)
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       }) // .then((data) => console.log(data))
-      res.json({ status: 'success', id: `${lastId + 1}` * 1 })
+      res.json({ status: 'success', id: `${lastId * 1 + 1}` * 1 })
     })
   readFile(`${__dirname}/users.json`, {
     encoding: 'utf8'
@@ -80,27 +80,32 @@ server.post('/api/v1/users/', async (req, res) => {
 
 server.patch('/api/v1/users/:userId', (req, res) => {
   const id = req.params
+  let newUser = req.body
+  newUser = { id: id.userId * 1, ...newUser }
   readFile(`${__dirname}/users.json`, {
     encoding: 'utf8'
   })
     .then((data) => {
       let users = JSON.parse(data)
       let flag = false
-      users = users.reduce((acc, rec) => {
-        if (rec.id === 1 * id.userId) {
+      users = users.map((it) => {
+        if (it.id === 1 * id.userId) {
           flag = true
-          return [...acc, rec]
+          return { ...it, ...newUser }
         }
-        return [...acc, rec]
+        return it
       }, [])
-      if (!flag) users = [...users, { id: id.userId * 1 }]
+      if (!flag) users = [...users, ...newUser]
       writeFile(`${__dirname}/users.json`, JSON.stringify(users), {
         encoding: 'utf8'
       })
       res.json({ status: 'success', id: 1 * id.userId })
     })
-    .catch(async () => {
-      // console.log(err)
+    .catch(() => {
+      writeFile(`${__dirname}/users.json`, JSON.stringify(newUser), {
+        encoding: 'utf8'
+      })
+      res.json({ status: 'success', id: 1 * id.userId })
     })
 })
 
