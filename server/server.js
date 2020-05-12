@@ -4,6 +4,7 @@ import path from 'path'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
+import axios from 'axios'
 
 import cookieParser from 'cookie-parser'
 import Html from '../client/html'
@@ -21,8 +22,22 @@ server.use(bodyParser.json({ limit: '50mb', extended: true }))
 
 server.use(cookieParser())
 
-server.use('/api/', (req, res) => {
-  res.status(404)
+server.get('/api/v1/user', (req, res) => {
+  res.json({ name: 'Yehor' })
+  res.end()
+})
+
+server.get('/api/v1/users', async (req, res) => {
+  const { data: users } = await axios('https://jsonplaceholder.typicode.com/users')
+  res.json({ users })
+  res.end()
+})
+
+server.get('/api/v1/users/take/:number', async (req, res) => {
+  const { number } = req.params
+
+  const { data: users } = await axios('https://jsonplaceholder.typicode.com/users')
+  res.json(users.slice(0, +number))
   res.end()
 })
 
