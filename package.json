@@ -66,6 +66,7 @@
     "@babel/preset-typescript": "^7.7.4",
     "@babel/register": "^7.7.4",
     "@babel/runtime": "^7.7.6",
+    "@hot-loader/react-dom": "^16.13.0",
     "@storybook/cli": "^5.2.8",
     "autoprefixer": "^9.7.3",
     "babel-core": "7.0.0-bridge.0",
