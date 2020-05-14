@@ -34,9 +34,8 @@ const config = {
     hot: true,
     contentBase: path.resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 8081,
-
     historyApiFallback: true,
     overlay: {
       warnings: true,
@@ -75,13 +74,12 @@ const config = {
       {
         test: /\.js$/,
         include: path.resolve(__dirname, 'client'),
-        loaders: ['thread-loader', 'babel-loader'],
+        loaders: ['babel-loader'],
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
         use: [
-          'thread-loader',
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
