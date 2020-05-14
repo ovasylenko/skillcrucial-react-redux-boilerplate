@@ -13,7 +13,7 @@ const { readFile, writeFile, unlink } = require('fs').promises
 
 let connections = []
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 const server = express()
 
 server.use(cors())
@@ -30,6 +30,7 @@ server.use((req, res, next) => {
 
 server.use(cookieParser())
 
+// get /api/v1/users - получает всех юзеров из файла users.json, если его нет - получает данные с сервиса https://jsonplaceholder.typicode.com/users и заполняет файл users.json y и возвращает данные
 server.get('/api/v1/users', (req, res) => {
   readFile(`${__dirname}/users.json`, { encoding: 'utf8' })
     .then((data) => res.json(JSON.parse(data)))
