@@ -33,6 +33,19 @@ const fileRead = async () => {
       return users
     })
 }
+
+const fileReadPost = async () => {
+  return readFile(`${__dirname}/test.json`, { encoding: 'utf8' })
+    .then((data) => {
+      return JSON.parse(data)
+    })
+    .catch(async () => {
+      const users = []
+      await fileSave(users)
+      return users
+    })
+}
+
 const port = process.env.PORT || 3000
 const server = express()
 
@@ -57,11 +70,11 @@ server.delete('/api/v1/users', async (req, res) => {
 })
 
 server.post('/api/v1/users', async (req, res) => {
-  const users = await fileRead()
+  const users = await fileReadPost()
   const newUserBody = req.body
   newUserBody.id = users.length + 1
-  const newUsers = [...users, newUserBody]
-  fileSave(newUsers)
+  const newUsersFile = [...users, newUserBody]
+  fileSave(newUsersFile)
   res.json({ status: 'success', id: newUserBody.id })
 })
 
