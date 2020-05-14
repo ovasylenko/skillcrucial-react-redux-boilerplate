@@ -7,7 +7,7 @@ const PurgecssPlugin = require('purgecss-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const uuidv4 = require('uuid/v4')
+const { v4: uuidv4} = require('uuid')
 
 const PATHS = {
   src: path.join(__dirname, 'client')
