@@ -24,7 +24,7 @@
   $ yarn run build:prod
   ```
 4. Copy .env.example file to .env and make the necessary changes there
-  
+
 5. Run project in Dev mode
 
   ```shell
@@ -54,7 +54,7 @@ This folder contains all your components
 This directory contains compiled project files
 
 #### `webpack.development.config.js` `and webpack.production.frontend.config.js`
-Project environment configs. Webpack uses proper config depending on defined application environment. 
+Project environment configs. Webpack uses proper config depending on defined application environment.
 By default `webpack.development.config.js` is used unless you build the application with --config webpack.production.frontend.config.js variable.
 
 
@@ -73,13 +73,13 @@ Installs the dependencies.
 yarn run dev
 ```
 
-Starts the development server running on `http://localhost:3000` using the webpack.development.config.js with Hot Module Replacement (HMR) (Changes in the application code will be hot-reloaded)
+Starts the development server running on `http://localhost:8080` using the webpack.development.config.js with Hot Module Replacement (HMR) (Changes in the application code will be hot-reloaded)
 
 ```Shell
 yarn run dev:server
 ```
 
-Starts the development server and makes your application accessible at http://localhost:3000.
+Starts the development server and makes your application accessible at http://localhost:8080.
 
 ```Shell
 yarn run clean
@@ -127,7 +127,7 @@ yarn test:coverage
 yarn run lint
 ```
 Will analyse your code for potential errors. Will check both: `./client/**/**.js` and `./server/**/**.js` files.
-Code linting is a type of static analysis that is frequently used to find problematic patterns or code that doesn’t adhere to certain style guidelines. 
+Code linting is a type of static analysis that is frequently used to find problematic patterns or code that doesn’t adhere to certain style guidelines.
 
 
 ```Shell
