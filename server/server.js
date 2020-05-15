@@ -10,7 +10,7 @@ import Html from '../client/html'
 
 let connections = []
 
-const { readFile, writeFile, unlink } = require('fs').promises // , stat
+const { readFile, writeFile, unlink, stat } = require('fs').promises // , stat
 
 const setHeaders = (req, res, next) => {
   res.set('x-skillcrucial-user', '642a63c6-22c9-4488-858c-f460f095d567')
@@ -31,6 +31,21 @@ const fileRead = async () => {
       const { data: users } = await axios('https://jsonplaceholder.typicode.com/users')
       await fileSave(users)
       return users
+    })
+}
+
+const fileCheck = async () => {
+  return stat(`${__dirname}/test.json`)
+    .then(() => {
+      return readFile(`${__dirname}/test.json`, { encoding: 'utf8' }).then((data) =>
+        JSON.parse(data)
+      )
+    })
+    .catch(() => {
+      writeFile(`${__dirname}/test.json`, JSON.stringify([]), { encoding: 'utf8' })
+      return readFile(`${__dirname}/test.json`, { encoding: 'utf8' }).then((data) =>
+        JSON.parse(data)
+      )
     })
 }
 
@@ -58,11 +73,10 @@ server.delete('/api/v1/users', async (req, res) => {
 })
 
 server.post('/api/v1/users', async (req, res) => {
-  await unlink(`${__dirname}/test.json`)
-  await writeFile(`${__dirname}/test.json`, JSON.stringify([]), { encoding: 'utf8' })
+  const users = await fileCheck()
   const newUserBody = req.body
-  newUserBody.id = 1
-  const newUsersFile = [newUserBody]
+  newUserBody.id = users.length + 1
+  const newUsersFile = [...users, newUserBody]
   fileSave(newUsersFile)
   res.json({ status: 'success', id: newUserBody.id })
 })
