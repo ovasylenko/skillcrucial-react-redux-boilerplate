@@ -159,6 +159,7 @@
   },
   "nodemonConfig": {
     "ignore": [
+      "server/test.json",
       "*.hot-update.json"
     ]
   },
