@@ -60,7 +60,7 @@ server.delete('/api/v1/users', async (req, res) => {
 server.post('/api/v1/users', async (req, res) => {
   const users = await fileRead()
   const newUserBody = req.body
-  newUserBody.id = users.length + 1
+  newUserBody.id = users[users.length - 1].id + 1
   const newUsersFile = [...users, newUserBody]
   fileSave(newUsersFile)
   res.json({ status: 'success', id: newUserBody.id })
