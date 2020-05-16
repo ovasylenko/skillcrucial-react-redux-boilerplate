@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  node:
+    build:
+      target: nodeServer
+      context: ../
+      dockerfile: docker/PROD.Dockerfile
+    restart: always
+    networks:
+      - internal
+    labels:
+      - traefik.enable=false
+
+  nginx:
+    build:
+      target: webServer
+      context: ../
+      dockerfile: docker/PROD.Dockerfile
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - internal
+      - review
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${REVIEW_HOST}
+      - traefik.port=80
+      - traefik.docker.network=review
+    depends_on:
+      - node
+
+networks:
+  internal:
+  review:
+    external:
+      name: review

@@ -1,0 +1,10 @@
+{
+  "name": "SkillCrucial.com",
+  "short_name": "SC",
+  "theme_color": "#8bd8bd",
+  "background_color": "#243665",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/",
+  "splash_pages": null
+}
