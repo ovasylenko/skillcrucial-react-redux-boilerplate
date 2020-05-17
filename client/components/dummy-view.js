@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Head from './head'
 
 const Dummy = () => {
@@ -17,4 +16,4 @@ const Dummy = () => {
 
 Dummy.propTypes = {}
 
-export default Dummy
+export default React.memo(Dummy)

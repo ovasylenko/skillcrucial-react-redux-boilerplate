@@ -12,13 +12,14 @@ const config = {
   entry: [
     'babel-polyfill',
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3001',
+    'webpack-dev-server/client?http://localhost:8081',
     'webpack/hot/only-dev-server',
     './main.js',
     './assets/scss/main.scss'
   ],
   resolve: {
     alias: {
+      'react-dom': '@hot-loader/react-dom',
       d3: 'd3/index.js'
     }
   },
@@ -34,20 +35,19 @@ const config = {
     contentBase: path.resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
     host: 'localhost',
-    port: 3001,
-
+    port: 8081,
     historyApiFallback: true,
     overlay: {
-      warnings: false,
+      warnings: true,
       errors: true
     },
     proxy: [
       {
-        context: ['/api', '/auth'],
-        target: 'http://localhost:3000',
+        context: ['/api', '/auth', '/ws', '/js/variables.js', '/sockjs-node'],
+        target: 'http://localhost:8080',
         secure: false,
         changeOrigin: true,
-        ws: false
+        ws: true
       }
     ]
   },
