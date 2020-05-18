@@ -8,8 +8,9 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import store, { history } from '../redux'
 
 import Home from '../components/home'
-import DummyView from '../components/dummy-view'
+import Maingit from '../components/main-git'
 import NotFound from '../components/404'
+import DummyView from '../components/dummy-view'
 
 import Startup from './startup'
 
@@ -69,7 +70,7 @@ export default (props) => {
       <ConnectedRouter history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
-            <Route exact path="/" component={() => <DummyView />} />
+            <Route exact path="/" component={() => <Maingit />} />
             <Route exact path="/dashboard" component={() => <Home />} />
             <PrivateRoute exact path="/hidden-route" component={() => <DummyView />} />
             <Route component={() => <NotFound />} />
