@@ -1,20 +1,32 @@
-const path = require('path')
+const { resolve } = require('path')
 require('dotenv').config()
-const webpack = require('webpack')
-const glob = require('glob')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const PurgecssPlugin = require('purgecss-webpack-plugin')
-const TerserJSPlugin = require('terser-webpack-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const uuidv4 = require('uuid/v4')
 
-const PATHS = {
-  src: path.join(__dirname, 'client')
-}
+const webpack = require('webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const StringReplacePlugin = require('string-replace-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserJSPlugin = require('terser-webpack-plugin')
+const { v4: uuidv4 } = require('uuid')
+
+const gitRevisionPlugin = new GitRevisionPlugin()
+const version = uuidv4().substr(0, 7)
 
 const config = {
-  entry: ['./main.js', './assets/scss/main.scss'],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserJSPlugin({ parallel: true }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: require('cssnano'),
+        cssProcessorPluginOptions: {
+          preset: ['default', { discardComments: { removeAll: true } }]
+        }
+      })
+    ]
+  },
+  entry: ['./main.js'],
   resolve: {
     alias: {
       d3: 'd3/index.js'
@@ -22,38 +34,45 @@ const config = {
   },
   output: {
     filename: 'js/bundle.js',
-    chunkFilename: 'js/[name].[contenthash].js',
-    path: path.resolve(__dirname, 'dist/assets'),
-    publicPath: ''
+    path: resolve(__dirname, 'dist/assets'),
+    publicPath: '/',
+    chunkFilename: 'js/[name].js?id=[chunkhash]'
   },
   mode: 'production',
-  context: path.resolve(__dirname, 'client'),
+  context: resolve(__dirname, 'client'),
   devtool: false,
   performance: {
-    hints: false,
+    hints: 'warning',
     maxEntrypointSize: 512000,
     maxAssetSize: 512000
-  },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        styles: {
-          name: 'styles',
-          test: /\.css$/,
-          chunks: 'all',
-          enforce: true
-        }
-      }
-    },
-    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})]
   },
   module: {
     rules: [
       {
+        test: /.html$/,
+        loader: StringReplacePlugin.replace({
+          replacements: [
+            {
+              pattern: /COMMITHASH/gi,
+              replacement() {
+                return gitRevisionPlugin.commithash()
+              }
+            }
+          ]
+        })
+      },
+      {
         enforce: 'pre',
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'eslint-loader'
+        loader: [
+          {
+            loader: 'eslint-loader',
+            options: {
+              cache: true
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
@@ -64,24 +83,15 @@ const config = {
         test: /\.css$/,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader
-          },
-          {
-            loader: 'css-loader',
-            options: { sourceMap: false }
-          },
-          {
-            loader: 'postcss-loader',
+            loader: MiniCssExtractPlugin.loader,
             options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('tailwindcss'),
-                require('autoprefixer')(),
-                require('cssnano')()
-              ]
+              publicPath: '../',
+              hmr: process.env.NODE_ENV === 'development'
             }
+          },
+          { loader: 'css-loader', options: { sourceMap: false } },
+          {
+            loader: 'postcss-loader'
           }
         ]
       },
@@ -96,25 +106,14 @@ const config = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: '../'
+              publicPath: '../',
+              hmr: process.env.NODE_ENV === 'development'
             }
           },
+
+          { loader: 'css-loader', options: { sourceMap: false } },
           {
-            loader: 'css-loader',
-            options: { sourceMap: false }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('tailwindcss'),
-                require('autoprefixer')(),
-                require('cssnano')()
-              ]
-            }
+            loader: 'postcss-loader'
           },
           {
             loader: 'sass-loader',
@@ -125,61 +124,66 @@ const config = {
         ]
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(jpg|png|gif|svg|webp)$/,
+        loader: 'image-webpack-loader',
+        enforce: 'pre'
+      },
+      {
+        test: /\.(jpg|png|gif|webp)$/,
         use: [
           {
-            loader: 'url-loader',
-            options: {
-              limit: 100,
-              mimetype: 'image/png',
-              name: 'images/[name].[ext]'
-            }
+            loader: 'file-loader'
           }
         ]
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.eot$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.woff(2)$/,
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: 'images/[name].[ext]'
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
             }
           }
         ]
       },
       {
-        test: /\.eot(\?v=\d+.\d+.\d+)?$/,
+        test: /\.[ot]tf$/,
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: 'fonts/[name].[ext]'
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
             }
           }
         ]
       },
       {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.svg$/,
         use: [
           {
-            loader: 'file-loader'
-          }
-        ]
-      },
-      {
-        test: /\.[ot]tf(\?v=\d+.\d+.\d+)?$/,
-        use: [
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          },
           {
-            loader: 'file-loader'
-          }
-        ]
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader'
+            loader: 'svg-url-loader',
+            options: {
+              limit: 10 * 1024,
+              noquotes: true
+            }
           }
         ]
       }
@@ -187,48 +191,65 @@ const config = {
   },
 
   plugins: [
+    new StringReplacePlugin(),
+
     new webpack.LoaderOptionsPlugin({
       test: /\.js$/,
       options: {
         eslint: {
-          configFile: path.resolve(__dirname, '.eslintrc'),
+          configFile: resolve(__dirname, '.eslintrc'),
           cache: false
         }
       }
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+
+    new CopyWebpackPlugin(
+      {
+        patterns: [
+          { from: 'assets/images', to: 'images' },
+          { from: 'assets/fonts', to: 'fonts' },
+
+          { from: 'assets/sitemap.xml', to: 'sitemap.xml' },
+          { from: 'assets/manifest.json', to: 'manifest.json' },
+          {
+            from: 'install-sw.js',
+            to: 'js/install-sw.js',
+            transform: (content) => {
+              return content.toString().replace(/APP_VERSION/g, version)
+            }
+          },
+          { from: 'assets/robots.txt', to: 'robots.txt' },
+          { from: 'vendors', to: 'vendors' },
+          {
+            from: 'html.js',
+            to: 'html.js',
+            transform: (content) => {
+              return content.toString().replace(/COMMITHASH/g, version)
+            }
+          },
+          {
+            from: 'sw.js',
+            to: 'sw.js',
+            transform: (content) => {
+              return content.toString().replace(/APP_VERSION/g, version)
+            }
+          }
+        ]
+      },
+      { parallel: 100 }
+    ),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-      chunkFilename: '[id].css',
+      filename: 'css/main.css',
+      chunkFilename: 'css/[id].css',
       ignoreOrder: false
     }),
-    new PurgecssPlugin({
-      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-    }),
-    new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
-    new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
-
-    new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-    new CopyWebpackPlugin([{ from: 'assets/manifest.json', to: 'manifest.json' }]),
-    new CopyWebpackPlugin([{ from: 'assets/robots.txt', to: 'robots.txt' }]),
-
-    new CopyWebpackPlugin([
-      {
-        from: 'html.js',
-        to: '../html.js',
-        transform: (content) => {
-          return content.toString().replace(/COMMITHASH/g, uuidv4())
-        }
-      }
-    ]),
-    new webpack.DefinePlugin(
-      Object.keys(process.env).reduce(
-        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
-        {}
-      )
-    ),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+    new webpack.DefinePlugin({
+      NODE_ENV: 'production',
+      LANDING_URL: process.env.LANDING_URL,
+      IS_PROD: process.env.NODE_ENV === 'production',
+      APP_VERSION: version,
+      STRIPE_PUBLIC_KEY: JSON.stringify({ key: process.env.STRIPE_PUBLIC_KEY }),
+      SENTRY_CLIENT_URL: JSON.stringify({ key: process.env.SENTRY_CLIENT_URL })
     })
   ]
 }

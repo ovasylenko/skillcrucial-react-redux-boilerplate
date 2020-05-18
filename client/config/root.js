@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Provider, connect } from 'react-redux'
+import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
-import { Switch, Route, withRouter, Redirect } from 'react-router-dom'
-import { bindActionCreators } from 'redux'
+import { Switch, Route, Redirect, StaticRouter } from 'react-router-dom'
 
 import store, { history } from '../redux'
 
@@ -64,31 +63,24 @@ PrivateRoute.propTypes = types
 PrivateRoute.defaultProps = defaults
 OnlyAnonymousRoute.defaultProps = defaults
 
-const mapStateToProps = (state) => ({
-  user: state.authentication.user,
-  token: state.authentication.token
-})
+const ScillcrucialRouter = (props) =>
+  typeof window !== 'undefined' ? <ConnectedRouter {...props} /> : <StaticRouter {...props} />
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
-
-const PrivateRouteConnected = connect(mapStateToProps, mapDispatchToProps)(PrivateRoute)
-
-const mapDispatchToPropsStartup = (dispatch) => bindActionCreators({}, dispatch)
-
-const StartupConnected = withRouter(connect(() => ({}), mapDispatchToPropsStartup)(Startup))
-export default (props) => {
+const Root = (props) => {
   return (
     <Provider store={store}>
-      <ConnectedRouter history={history} location={props.location} context={props.context}>
-        <StartupConnected>
+      <ScillcrucialRouter history={history} location={props.location} context={props.context}>
+        <Startup>
           <Switch>
             <Route exact path="/" component={() => <DummyView />} />
             <Route exact path="/dashboard" component={() => <Home />} />
-            <PrivateRouteConnected exact path="/hidden-route" component={() => <DummyView />} />
+            <PrivateRoute exact path="/hidden-route" component={() => <DummyView />} />
             <Route component={() => <NotFound />} />
           </Switch>
-        </StartupConnected>
-      </ConnectedRouter>
+        </Startup>
+      </ScillcrucialRouter>
     </Provider>
   )
 }
+
+export default Root
