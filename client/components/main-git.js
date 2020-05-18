@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from './head'
-import { Link } from 'react-router-dom'
-import UserPage from './user'
+// import { Link } from 'react-router-dom'
+// import UserPage from './user'
 
 const Maingit = () => {
   return (
@@ -16,9 +16,6 @@ const Maingit = () => {
             type="button"
             id="search-button"
             className="border bg-yellow-900 font-bold p-2 rounded-lg"
-            onClick={
-
-            }
           >
             Let`s go
           </button>
