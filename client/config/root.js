@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, StaticRouter } from 'react-router-dom'
 
 import store, { history } from '../redux'
 
@@ -63,10 +63,13 @@ PrivateRoute.propTypes = types
 PrivateRoute.defaultProps = defaults
 OnlyAnonymousRoute.defaultProps = defaults
 
-export default (props) => {
+const ScillcrucialRouter = (props) =>
+  typeof window !== 'undefined' ? <ConnectedRouter {...props} /> : <StaticRouter {...props} />
+
+const Root = (props) => {
   return (
     <Provider store={store}>
-      <ConnectedRouter history={history} location={props.location} context={props.context}>
+      <ScillcrucialRouter history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
             <Route exact path="/" component={() => <DummyView />} />
@@ -75,7 +78,9 @@ export default (props) => {
             <Route component={() => <NotFound />} />
           </Switch>
         </Startup>
-      </ConnectedRouter>
+      </ScillcrucialRouter>
     </Provider>
   )
 }
+
+export default Root
