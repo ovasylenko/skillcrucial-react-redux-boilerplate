@@ -14,7 +14,7 @@ const config = {
   entry: [
     'babel-polyfill',
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://0.0.0.0:8087',
+    'webpack-dev-server/client?http://localhost:8087',
     'webpack/hot/only-dev-server',
     './main.js'
   ],
@@ -36,7 +36,7 @@ const config = {
     hot: true,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 8087,
 
     historyApiFallback: true,
@@ -47,7 +47,7 @@ const config = {
     proxy: [
       {
         context: ['/api', '/auth', '/ws'],
-        target: 'http://0.0.0.0:8090',
+        target: 'http://localhost:8090',
         secure: false,
         changeOrigin: true,
         ws: true
