@@ -1,10 +1,9 @@
-import 'core-js'
-import 'raf/polyfill'
-import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import Root from './config/root'
+
+import './assets/scss/main.scss'
 
 const target = document.getElementById('root')
 

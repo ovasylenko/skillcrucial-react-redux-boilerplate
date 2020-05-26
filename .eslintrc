@@ -1,6 +1,13 @@
 {
-  "extends": ["airbnb", "prettier"],
   "parser": "babel-eslint",
+  "root": true,
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/babel",
+    "prettier/react",
+    "plugin:react/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 6,
     "ecmaFeatures": {
@@ -8,7 +15,8 @@
     }
   },
   "plugins": [
-    "react-hooks", "prettier"
+    "prettier",
+    "react-hooks"
   ],
   "env": {
     "browser": true,
@@ -16,15 +24,23 @@
     "mocha": true,
     "es6": true
   },
+  "globals": {
+    "IS_PROD": true,
+    "STRIPE_PUBLIC_KEY": true,
+    "SENTRY_CLIENT_URL": true,
+    "deferredPrompt": true,
+    "axios": true,
+    "globalThis": true
+  },
   "rules": {
-    "prettier/prettier": "warn",
+    "prettier/prettier": ["warn"],
     "space-before-function-paren": "off",
     "react/prefer-stateless-function": "warn",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/label-has-for": [ 2, {
       "required": {
-          "every": [ "id" ]
+        "every": [ "id" ]
       }
     }],
     "jsx-a11y/label-has-associated-control": [ 2, {
@@ -33,11 +49,13 @@
       "controlComponents": ["CustomInput"],
       "depth": 3
     }],
-      "max-len": ["error", {
+      "max-len": ["warn", {
       "ignoreComments": true,
       "ignoreStrings": true,
-      "code": 200
+      "code": 240
     }],
+    "react/jsx-uses-react": 1,
+    "react/sort-comp": "off",
     "import/no-cycle": "off",
     "react/prop-types": "off",
     "linebreak-style": "off",
@@ -47,11 +65,18 @@
     "comma-dangle": "off",
     "class-methods-use-this": "off",
     "quote-props": "off",
-    "no-underscore-dangle": ["error", { "allow": ["__REDUX_DEVTOOLS_EXTENSION__"] }],
+    "no-underscore-dangle": ["error", { "allow": ["__REDUX_DEVTOOLS_EXTENSION__", "_id", "_doc"] }],
     "react/destructuring-assignment": "off",
     "react/jsx-wrap-multilines": "off",
     "react/jsx-one-expression-per-line": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "react/no-array-index-key": "warn",
+    "jsx-a11y/control-has-associated-label": "warn",
+    "jsx-a11y/no-autofocus": "warn",
+    "max-classes-per-file": "warn",
+    "react/jsx-props-no-spreading": ["off"],
+    "camelcase": "off"
+
   }
 }
