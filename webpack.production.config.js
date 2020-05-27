@@ -26,14 +26,17 @@ const config = {
       })
     ]
   },
-  entry: ['./main.js'],
+  entry: {
+    main: './main.js',
+    root: './config/root.js'
+  }, // [('./main.js', './config/root.js')],
   resolve: {
     alias: {
       d3: 'd3/index.js'
     }
   },
   output: {
-    filename: 'js/bundle.js',
+    filename: 'js/[name].bundle.js',
     path: resolve(__dirname, 'dist/assets'),
     publicPath: '/',
     chunkFilename: 'js/[name].js?id=[chunkhash]'
@@ -172,13 +175,6 @@ const config = {
         test: /\.svg$/,
         use: [
           {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          },
-          {
             loader: 'svg-url-loader',
             options: {
               limit: 10 * 1024,
@@ -243,14 +239,15 @@ const config = {
       chunkFilename: 'css/[id].css',
       ignoreOrder: false
     }),
-    new webpack.DefinePlugin({
-      NODE_ENV: 'production',
-      LANDING_URL: process.env.LANDING_URL,
-      IS_PROD: process.env.NODE_ENV === 'production',
-      APP_VERSION: version,
-      STRIPE_PUBLIC_KEY: JSON.stringify({ key: process.env.STRIPE_PUBLIC_KEY }),
-      SENTRY_CLIENT_URL: JSON.stringify({ key: process.env.SENTRY_CLIENT_URL })
-    })
+    new webpack.DefinePlugin(
+      Object.keys(process.env).reduce(
+        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
+        {
+          APP_VERSION: uuidv4().substr(0, 7),
+          ENABLE_SOCKETS: process.env.ENABLE_SOCKETS || false
+        }
+      )
+    )
   ]
 }
 

@@ -25,7 +25,7 @@ const config = {
     }
   },
   output: {
-    filename: 'js/bundle.js',
+    filename: 'js/[name].bundle.js',
     path: resolve(__dirname, 'dist/assets'),
     publicPath: '/',
     chunkFilename: 'js/[name].[contenthash].js'
@@ -120,7 +120,11 @@ const config = {
           }
         ]
       },
-
+      {
+        test: /\.(jpg|png|gif|svg|webp)$/,
+        loader: 'image-webpack-loader',
+        enforce: 'pre'
+      },
       {
         test: /\.(png|jpg|gif|webp)$/,
         use: [
@@ -156,13 +160,6 @@ const config = {
       {
         test: /\.svg$/,
         use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          },
           {
             loader: 'svg-url-loader',
             options: {
@@ -230,14 +227,16 @@ const config = {
     ),
 
     new ReactRefreshWebpackPlugin(),
-    new webpack.DefinePlugin({
-      NODE_ENV: 'development',
-      LANDING_URL: process.env.LANDING_URL,
-      IS_PROD: process.env.NODE_ENV === 'production',
-      APP_VERSION: uuidv4().substr(0, 7),
-      STRIPE_PUBLIC_KEY: JSON.stringify({ key: process.env.STRIPE_PUBLIC_KEY })
-    }),
-    new HardSourceWebpackPlugin(),
+    new webpack.DefinePlugin(
+      Object.keys(process.env).reduce(
+        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
+        {
+          APP_VERSION: uuidv4().substr(0, 7),
+          ENABLE_SOCKETS: JSON.stringify(process.env.ENABLE_SOCKETS || false)
+        }
+      )
+    ),
+    //  new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ]
 }

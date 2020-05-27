@@ -7,9 +7,18 @@ import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
 
 import cookieParser from 'cookie-parser'
-import Root from '../client/config/root'
+import config from './config'
 
 import Html from '../client/html'
+
+let Root = () => ''
+
+try {
+  // eslint-disable-next-line import/no-unresolved
+  Root = require('../dist/assets/js/root.bundle')
+} catch (ex) {
+  console.log(' run yarn build:prod to enable ssr')
+}
 
 let connections = []
 
@@ -29,16 +38,6 @@ middleware.forEach((it) => server.use(it))
 server.use('/api/', (req, res) => {
   res.status(404)
   res.end()
-})
-
-const echo = sockjs.createServer()
-echo.on('connection', (conn) => {
-  connections.push(conn)
-  conn.on('data', async () => {})
-
-  conn.on('close', () => {
-    connections = connections.filter((c) => c.readyState !== 3)
-  })
 })
 
 const [htmlStart, htmlEnd] = Html({
@@ -71,7 +70,16 @@ server.get('/*', (req, res) => {
 
 const app = server.listen(port)
 
-echo.installHandlers(app, { prefix: '/ws' })
+if (config.isSocketsEnabled) {
+  const echo = sockjs.createServer()
+  echo.on('connection', (conn) => {
+    connections.push(conn)
+    conn.on('data', async () => {})
 
-// eslint-disable-next-line no-console
+    conn.on('close', () => {
+      connections = connections.filter((c) => c.readyState !== 3)
+    })
+  })
+  echo.installHandlers(app, { prefix: '/ws' })
+}
 console.log(`Serving at http://localhost:${port}`)
