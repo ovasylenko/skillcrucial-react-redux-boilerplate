@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const Startup = (props) => {
-  useEffect(() => {})
+  useEffect(() => {}, [])
 
-  return <>{props.children}</>
+  return props.children
 }
 
 Startup.propTypes = {

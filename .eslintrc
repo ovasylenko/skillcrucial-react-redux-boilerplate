@@ -1,5 +1,6 @@
 {
   "parser": "babel-eslint",
+  "root": true,
   "extends": [
     "airbnb",
     "prettier",
@@ -29,7 +30,8 @@
     "SENTRY_CLIENT_URL": true,
     "deferredPrompt": true,
     "axios": true,
-    "globalThis": true
+    "globalThis": true,
+    "ENABLE_SOCKETS": true
   },
   "rules": {
     "prettier/prettier": ["warn"],
