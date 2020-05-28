@@ -189,16 +189,6 @@ const config = {
   plugins: [
     new StringReplacePlugin(),
 
-    new webpack.LoaderOptionsPlugin({
-      test: /\.js$/,
-      options: {
-        eslint: {
-          configFile: resolve(__dirname, '.eslintrc'),
-          cache: false
-        }
-      }
-    }),
-
     new CopyWebpackPlugin(
       {
         patterns: [
