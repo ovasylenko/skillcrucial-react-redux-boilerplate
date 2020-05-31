@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-let Root = () => ''
+const Root = () => ''
 
 try {
   // eslint-disable-next-line import/no-unresolved
