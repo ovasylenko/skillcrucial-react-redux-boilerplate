@@ -82,5 +82,5 @@ const RootComponent = (props) => {
     </Provider>
   )
 }
-export const Root = RootComponent
+
 export default RootComponent
