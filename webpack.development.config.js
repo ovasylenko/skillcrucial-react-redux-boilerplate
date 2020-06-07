@@ -1,23 +1,19 @@
 const { resolve } = require('path')
-require('dotenv').config()
-
+const fs = require('fs')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const { v4: uuidv4 } = require('uuid')
+const eslintCacheIdentifier = JSON.stringify(fs.statSync('.eslintrc').mtimeMs)
+require('dotenv').config()
+
 const version = 'development'
 const config = {
   devtool: 'cheap-module-eval-source-map',
 
-  entry: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8087',
-    'webpack/hot/only-dev-server',
-    './main.js'
-  ],
+  entry: ['./main.js'],
   resolve: {
     alias: {
       d3: 'd3/index.js',
@@ -25,7 +21,7 @@ const config = {
     }
   },
   output: {
-    filename: 'js/bundle.js',
+    filename: 'js/[name].bundle.js',
     path: resolve(__dirname, 'dist/assets'),
     publicPath: '/',
     chunkFilename: 'js/[name].[contenthash].js'
@@ -33,12 +29,13 @@ const config = {
   mode: 'development',
   context: resolve(__dirname, 'client'),
   devServer: {
-    hot: true,
+    hot: false,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
     host: 'localhost',
     port: 8087,
-
+    disableHostCheck: true,
+    open: true,
     historyApiFallback: true,
     overlay: {
       warnings: false,
@@ -50,7 +47,7 @@ const config = {
         target: `http://localhost:${process.env.PORT || 8090}`,
         secure: false,
         changeOrigin: true,
-        ws: true
+        ws: (process.env.ENABLE_SOCKETS || false)
       }
     ]
   },
@@ -65,7 +62,9 @@ const config = {
           {
             loader: 'eslint-loader',
             options: {
-              cache: true
+              cache: true,
+
+              cacheIdentifer: eslintCacheIdentifier
             }
           }
         ]
@@ -73,7 +72,7 @@ const config = {
       {
         test: /\.js$/,
         loaders: ['babel-loader'],
-        include: [/client/],
+        include: [/client/, /stories/],
         exclude: /node_modules/
       },
       {
@@ -120,7 +119,11 @@ const config = {
           }
         ]
       },
-
+      {
+        test: /\.(jpg|png|gif|svg|webp)$/,
+        loader: 'image-webpack-loader',
+        enforce: 'pre'
+      },
       {
         test: /\.(png|jpg|gif|webp)$/,
         use: [
@@ -157,13 +160,6 @@ const config = {
         test: /\.svg$/,
         use: [
           {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          },
-          {
             loader: 'svg-url-loader',
             options: {
               limit: 10 * 1024,
@@ -176,15 +172,6 @@ const config = {
   },
 
   plugins: [
-    new webpack.LoaderOptionsPlugin({
-      test: /\.js$/,
-      options: {
-        eslint: {
-          configFile: resolve(__dirname, '.eslintrc'),
-          cache: false
-        }
-      }
-    }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/main.css',
@@ -194,31 +181,30 @@ const config = {
     new CopyWebpackPlugin(
       {
         patterns: [
-          { from: 'assets/images', to: 'images' },
-          { from: 'assets/fonts', to: 'fonts' },
+          { from: `${__dirname}/client/assets/images`, to: 'images' },
+          { from: `${__dirname}/client/assets/fonts`, to: 'fonts' },
 
-          { from: 'assets/sitemap.xml', to: 'sitemap.xml' },
-          { from: 'assets/manifest.json', to: 'manifest.json' },
-          { from: 'index.html', to: 'index.html' },
+          { from: `${__dirname}/client/assets/sitemap.xml`, to: 'sitemap.xml' },
+          { from: `${__dirname}/client/assets/manifest.json`, to: 'manifest.json' },
+          { from: `${__dirname}/client/index.html`, to: 'index.html' },
 
           {
-            from: 'install-sw.js',
+            from: `${__dirname}/client/install-sw.js`,
             to: 'js/install-sw.js',
             transform: (content) => {
               return content.toString().replace(/APP_VERSION/g, version)
             }
           },
-          { from: 'assets/robots.txt', to: 'robots.txt' },
-          { from: 'vendors', to: 'vendors' },
+          { from: `${__dirname}/client/assets/robots.txt`, to: 'robots.txt' },
           {
-            from: 'html.js',
+            from: `${__dirname}/client/html.js`,
             to: 'html.js',
             transform: (content) => {
               return content.toString().replace(/COMMITHASH/g, version)
             }
           },
           {
-            from: 'sw.js',
+            from: `${__dirname}/client/sw.js`,
             to: 'sw.js',
             transform: (content) => {
               return content.toString().replace(/APP_VERSION/g, version)
@@ -230,14 +216,16 @@ const config = {
     ),
 
     new ReactRefreshWebpackPlugin(),
-    new webpack.DefinePlugin({
-      NODE_ENV: 'development',
-      LANDING_URL: process.env.LANDING_URL,
-      IS_PROD: process.env.NODE_ENV === 'production',
-      APP_VERSION: uuidv4().substr(0, 7),
-      STRIPE_PUBLIC_KEY: JSON.stringify({ key: process.env.STRIPE_PUBLIC_KEY })
-    }),
-    new HardSourceWebpackPlugin(),
+    new webpack.DefinePlugin(
+      Object.keys(process.env).reduce(
+        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
+        {
+          APP_VERSION: uuidv4().substr(0, 7),
+          ENABLE_SOCKETS: JSON.stringify(process.env.ENABLE_SOCKETS || false)
+        }
+      )
+    ),
+    //  new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ]
 }

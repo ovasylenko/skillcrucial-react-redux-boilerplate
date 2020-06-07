@@ -63,13 +63,13 @@ PrivateRoute.propTypes = types
 PrivateRoute.defaultProps = defaults
 OnlyAnonymousRoute.defaultProps = defaults
 
-const ScillcrucialRouter = (props) =>
+const RouterSelector = (props) =>
   typeof window !== 'undefined' ? <ConnectedRouter {...props} /> : <StaticRouter {...props} />
 
-const Root = (props) => {
+const RootComponent = (props) => {
   return (
     <Provider store={store}>
-      <ScillcrucialRouter history={history} location={props.location} context={props.context}>
+      <RouterSelector history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
             <Route exact path="/" component={() => <DummyView />} />
@@ -78,9 +78,9 @@ const Root = (props) => {
             <Route component={() => <NotFound />} />
           </Switch>
         </Startup>
-      </ScillcrucialRouter>
+      </RouterSelector>
     </Provider>
   )
 }
 
-export default Root
+export default RootComponent

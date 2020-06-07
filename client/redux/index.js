@@ -21,35 +21,34 @@ const composeFunc = process.env.NODE_ENV === 'development' ? composeWithDevTools
 const composedEnhancers = composeFunc(applyMiddleware(...middleware), ...enhancers)
 
 const store = createStore(rootReducer(history), initialState, composedEnhancers)
-
 let socket
 
-const initSocket = () => {
-  socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
+if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
+  const initSocket = () => {
+    socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
 
-  socket.onopen = () => {
-    store.dispatch(socketActions.connected)
+    socket.onopen = () => {
+      store.dispatch(socketActions.connected)
+    }
+
+    socket.onmessage = (message) => {
+      // eslint-disable-next-line no-console
+      console.log(message)
+
+      // socket.close();
+    }
+
+    socket.onclose = () => {
+      store.dispatch(socketActions.disconnected)
+      setTimeout(() => {
+        initSocket()
+      }, 2000)
+    }
   }
 
-  socket.onmessage = (message) => {
-    // eslint-disable-next-line no-console
-    console.log(message)
-
-    // socket.close();
-  }
-
-  socket.onclose = () => {
-    store.dispatch(socketActions.disconnected)
-    setTimeout(() => {
-      initSocket()
-    }, 2000)
-  }
+  initSocket()
 }
-
-initSocket()
-
 export function getSocket() {
   return socket
 }
-
 export default store
