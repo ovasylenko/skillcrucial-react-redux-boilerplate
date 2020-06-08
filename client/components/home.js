@@ -6,6 +6,7 @@ import Head from './head'
 import Main from './main'
 import Repos from './repos'
 import Readme from './readme'
+import Header from './header'
 
 const Home = () => {
   const { username, repository } = useParams()
@@ -21,12 +22,14 @@ const Home = () => {
     }
   }, [url, username])
 
-  const [readme, setReadme] = useState([])
+  const [readme, setReadme] = useState('')
 
   useEffect(() => {
     if (typeof username !== `undefined` && typeof repository !== `undefined`) {
       axios.get(urlReadme).then(({ data }) => {
-        setReadme(atob(data.content))
+        axios(data.download_url).then(({ data: text }) => {
+          setReadme(text)
+        })
       })
     }
   }, [urlReadme, username, repository])
@@ -34,7 +37,7 @@ const Home = () => {
   return (
     <div>
       <Head title="Home" />
-      <div> Hello World Home, {username} </div>
+      <Header />
       <Switch>
         <Route exact path="/" component={() => <Main />} />
         <Route exact path="/:username" component={() => <Repos repos={repositoriesList} />} />
