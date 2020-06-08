@@ -18,8 +18,8 @@ const OnlyAnonymousRoute = ({ component: Component, ...rest }) => {
     !!rest.user && !!rest.user.name && !!rest.token ? (
       <Redirect to={{ pathname: '/' }} />
     ) : (
-      <Component {...props} />
-    )
+        <Component {...props} />
+      )
   return <Route {...rest} render={func} />
 }
 
@@ -28,12 +28,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     !!rest.user && !!rest.user.name && !!rest.token ? (
       <Component {...props} />
     ) : (
-      <Redirect
-        to={{
-          pathname: '/login'
-        }}
-      />
-    )
+        <Redirect
+          to={{
+            pathname: '/login'
+          }}
+        />
+      )
   return <Route {...rest} render={func} />
 }
 
@@ -72,8 +72,9 @@ const Root = (props) => {
       <ScillcrucialRouter history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
-            <Route exact path="/" component={() => <DummyView />} />
-            <Route exact path="/dashboard" component={() => <Home />} />
+            <Route exact path="/:username" component={() => <Home />} />
+            <Route exact path="/:username/:repository" component={() => <Home />} />
+            <Route exact path="/*" component={() => <Home />} />
             <PrivateRoute exact path="/hidden-route" component={() => <DummyView />} />
             <Route component={() => <NotFound />} />
           </Switch>
