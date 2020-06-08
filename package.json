@@ -173,5 +173,8 @@
       "pre-commit": "cross-env npm run lint && npm test",
       "pre-push": "cross-env npm run lint && npm test"
     }
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
