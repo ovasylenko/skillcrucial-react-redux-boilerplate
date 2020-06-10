@@ -20,7 +20,7 @@ const Main = () => {
           <button
             className="bg-indigo-300 text-green font-bold rounded-lg shadow-lg p-2"
             type="button"
-            onClick={onClick}
+            onClick={onClick} id="search-button"
           >
             Search
           </button>
