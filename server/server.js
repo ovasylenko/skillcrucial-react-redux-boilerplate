@@ -31,12 +31,22 @@ let connections = []
 const port = process.env.PORT || 8090
 const server = express()
 
+const setHeaders = (req, res, next) => {
+  res.set({
+    'x-skillcrucial-user': '351542e2-893e-4a6f-80bd-8a9d3449afc5',
+    'Access-Control-Expose-Headers': 'X-SKILLCRUCIAL-USER',
+    'Content-Type': 'application/json; charset=utf-8'
+  })
+  next()
+}
+
 const middleware = [
   cors(),
   express.static(path.resolve(__dirname, '../dist/assets')),
   bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }),
   bodyParser.json({ limit: '50mb', extended: true }),
-  cookieParser()
+  cookieParser(),
+  setHeaders
 ]
 
 middleware.forEach((it) => server.use(it))
