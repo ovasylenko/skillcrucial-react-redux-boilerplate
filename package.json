@@ -6,7 +6,7 @@
     "scripts": {
         "docker-start-dev": "docker-compose -f \"docker\\DEV.docker-compose.yml\" up",
         "docker-stop-dev": "docker-compose -f \"docker\\DEV.docker-compose.yml\" down",
-        "dev": "yarn run watch:server & yarn run watch:client ",
+        "dev": "npm run watch:server & npm run watch:client ",
         "watch:client": "webpack-dev-server --mode development --config ./webpack.development.config.js",
         "dev:server": "webpack  --watch --config webpack.development.config.js",
         "start:dev": "webpack-dev-server --mode development --config ./webpack.development.config.js --open",
