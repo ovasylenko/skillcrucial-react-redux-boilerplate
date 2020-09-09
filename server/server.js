@@ -54,6 +54,83 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
+server.get('/api/v1/users', (req, res) => {
+  stat(`${__dirname}/users.json`)
+    .then((data) => {
+      if (data.size) {
+        readFile(`${__dirname}/users.json`, { encoding: 'utf-8' }).then((users) => {
+          res.send(users)
+        })
+      }
+    })
+    .catch((err) => {
+      if (err) {
+        axios.get('https://jsonplaceholder.typicode.com/users').then(({ data }) => {
+          writeFile(`${__dirname}/users.json`, JSON.stringify(data), { encoding: 'utf-8' }).then(
+            () => {
+              res.send(data)
+            }
+          )
+        })
+      }
+    })
+})
+
+server.post('/api/v1/users', (req, res) => {
+  readFile(`${__dirname}/users.json`, { encoding: 'utf-8' }).then((users) => {
+    const usersObj = JSON.parse(users)
+    const user = req.body
+    const newUsers = [...usersObj, user]
+
+    writeFile(`${__dirname}/users.json`, JSON.stringify(newUsers), { encoding: 'utf-8' }).then(
+      () => {
+        res.send(JSON.stringify({ status: 'success', id: user.id }))
+      }
+    )
+  })
+})
+
+server.patch('/api/v1/users/:id', (req, res) => {
+  readFile(`${__dirname}/users.json`, { encoding: 'utf-8' }).then((users) => {
+    const usersObj = JSON.parse(users)
+    const { body } = req
+    const { id } = req.params
+    const newUsers = usersObj.map((user) => {
+      if (+id === user.id) {
+        return {
+          ...user,
+          ...body
+        }
+      }
+      return user
+    })
+    writeFile(`${__dirname}/users.json`, JSON.stringify(newUsers), { encoding: 'utf-8' }).then(
+      () => {
+        res.send(JSON.stringify({ status: 'success', id }))
+      }
+    )
+  })
+})
+
+server.delete('/api/v1/users/:id', (req, res) => {
+  readFile(`${__dirname}/users.json`, { encoding: 'utf-8' }).then((users) => {
+    const usersObj = JSON.parse(users)
+    const { id } = req.params
+    const newUsers = usersObj.filter((user) => user.id !== +id)
+    writeFile(`${__dirname}/users.json`, JSON.stringify(newUsers), { encoding: 'utf-8' }).then(
+      () => {
+        res.send(JSON.stringify({ status: 'success', id }))
+      }
+    )
+  })
+})
+
+server.delete('/api/v1/users', (req, res) => {
+  unlink(`${__dirname}/users.json`).then(() => {
+    res.send(JSON.stringify({ status: 'success' }))
+  })
+})
+
 server.use('/api/', (req, res) => {
   res.status(404)
   res.end()
