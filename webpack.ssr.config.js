@@ -1,9 +1,10 @@
 const { resolve } = require('path')
 require('dotenv').config()
+const fs = require('fs')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const StringReplacePlugin = require('string-replace-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
@@ -11,23 +12,28 @@ const TerserJSPlugin = require('terser-webpack-plugin')
 const { v4: uuidv4 } = require('uuid')
 
 const gitRevisionPlugin = new GitRevisionPlugin()
-const version = uuidv4().substr(0, 7)
+const APP_VERSION = uuidv4().substr(0, 7)
 
 const config = {
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserJSPlugin({ parallel: true }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessor: require('cssnano'),
-        cssProcessorPluginOptions: {
-          preset: ['default', { discardComments: { removeAll: true } }]
-        }
-      })
-    ]
-  },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [
+  //     new TerserJSPlugin({ parallel: true }),
+  //     new OptimizeCSSAssetsPlugin({
+  //       cssProcessor: require('cssnano'),
+  //       cssProcessorPluginOptions: {
+  //         preset: ['default', { discardComments: { removeAll: true } }]
+  //       }
+  //     })
+  //   ]
+  // },
+  // node: {
+  //   fs: 'empty'
+  // },
+  target: 'node',
+
   entry: {
-    main: './main.js'
+    root: './config/root.js'
   },
   resolve: {
     alias: {
@@ -35,10 +41,10 @@ const config = {
     }
   },
   output: {
-    filename: 'js/[name].bundle.js',
+    filename: 'js/ssr/[name].bundle.js',
     path: resolve(__dirname, 'dist/assets'),
     publicPath: '/',
-    chunkFilename: 'js/[name].js?id=[chunkhash]'
+    chunkFilename: 'js/ssr/root.[name].bundle.js?id=[chunkhash]'
   },
   mode: 'production',
   context: resolve(__dirname, 'client'),
@@ -174,6 +180,13 @@ const config = {
         test: /\.svg$/,
         use: [
           {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          },
+          {
             loader: 'svg-url-loader',
             options: {
               limit: 10 * 1024,
@@ -187,56 +200,19 @@ const config = {
 
   plugins: [
     new StringReplacePlugin(),
-
-    new CopyWebpackPlugin(
-      {
-        patterns: [
-          { from: 'assets/images', to: 'images' },
-          { from: 'assets/fonts', to: 'fonts' },
-
-          { from: 'assets/sitemap.xml', to: 'sitemap.xml' },
-          { from: 'assets/manifest.json', to: 'manifest.json' },
-          {
-            from: 'install-sw.js',
-            to: 'js/install-sw.js',
-            transform: (content) => {
-              return content.toString().replace(/APP_VERSION/g, version)
-            }
-          },
-          { from: 'assets/robots.txt', to: 'robots.txt' },
-          { from: 'vendors', to: 'vendors' },
-          {
-            from: 'html.js',
-            to: 'html.js',
-            transform: (content) => {
-              return content.toString().replace(/COMMITHASH/g, version)
-            }
-          },
-          {
-            from: 'sw.js',
-            to: 'sw.js',
-            transform: (content) => {
-              return content.toString().replace(/APP_VERSION/g, version)
-            }
-          }
-        ]
-      },
-      { parallel: 100 }
-    ),
     new MiniCssExtractPlugin({
-      filename: 'css/main.css',
-      chunkFilename: 'css/[id].css',
+      filename: 'css/ssr/[name].css',
+      chunkFilename: 'css/ssr/[id].css',
       ignoreOrder: false
     }),
-    new webpack.DefinePlugin(
-      Object.keys(process.env).reduce(
-        (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
-        {
-          APP_VERSION: uuidv4().substr(0, 7),
-          ENABLE_SOCKETS: process.env.ENABLE_SOCKETS || false
-        }
-      )
-    )
+    new webpack.DefinePlugin({
+      NODE_ENV: 'production',
+      LANDING_URL: process.env.LANDING_URL,
+      IS_PROD: process.env.NODE_ENV === 'production',
+      APP_VERSION: JSON.stringify(APP_VERSION),
+      STRIPE_PUBLIC_KEY: JSON.stringify({ key: process.env.STRIPE_PUBLIC_KEY }),
+      SENTRY_CLIENT_URL: JSON.stringify({ key: process.env.SENTRY_CLIENT_URL })
+    })
   ]
 }
 

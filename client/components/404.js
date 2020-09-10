@@ -1,9 +1,9 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
 
 const NotFound = () => {
+  useEffect(() => {}, [])
   const dispatch = useDispatch()
   return (
     <div className="container main-wrapper aligner">
