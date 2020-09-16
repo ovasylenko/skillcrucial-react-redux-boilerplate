@@ -1,5 +1,6 @@
 import express from 'express'
 import path from 'path'
+import axios from 'axios'  
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
@@ -40,6 +41,17 @@ const middleware = [
 ]
 
 middleware.forEach((it) => server.use(it))
+
+
+server.get('/api/v1/user/:name', (req, res) => { 
+  const { name } = req.params
+  res.json(name)  
+})  
+
+server.get('/api/v1/links/', async (req, res) => {
+  const { data: todos } = await axios('https://jsonplaceholder.typicode.com/posts/5')
+  res.json(todos)
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)
