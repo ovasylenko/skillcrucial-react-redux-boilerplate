@@ -27,9 +27,8 @@ const config = {
     ]
   },
   entry: {
-    main: './main.js',
-    root: './config/root.js'
-  }, // [('./main.js', './config/root.js')],
+    main: './main.js'
+  },
   resolve: {
     alias: {
       d3: 'd3/index.js'
