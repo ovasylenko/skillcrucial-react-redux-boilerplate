@@ -1,67 +1,55 @@
-const path = require('path')
-require('dotenv').config()
+const { resolve } = require('path')
+const fs = require('fs')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const WebpackShellPlugin = require('webpack-shell-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const { v4: uuidv4 } = require('uuid')
+const eslintCacheIdentifier = JSON.stringify(fs.statSync('.eslintrc').mtimeMs)
+require('dotenv').config()
 
+const version = 'development'
 const config = {
   devtool: 'cheap-module-eval-source-map',
 
-  entry: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3001',
-    'webpack/hot/only-dev-server',
-    './main.js',
-    './assets/scss/main.scss'
-  ],
+  entry: ['./main.js'],
   resolve: {
     alias: {
-      d3: 'd3/index.js'
+      d3: 'd3/index.js',
+      'react-dom': '@hot-loader/react-dom'
     }
   },
   output: {
-    filename: 'js/bundle.js',
-    path: path.resolve(__dirname, 'dist/assets'),
-    publicPath: ''
+    filename: 'js/[name].bundle.js',
+    path: resolve(__dirname, 'dist/assets'),
+    publicPath: '/',
+    chunkFilename: 'js/[name].[contenthash].js'
   },
   mode: 'development',
-  context: path.resolve(__dirname, 'client'),
+  context: resolve(__dirname, 'client'),
   devServer: {
-    hot: true,
-    contentBase: path.resolve(__dirname, 'dist/assets'),
+    hot: false,
+    contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
     host: 'localhost',
-    port: 3001,
-
+    port: 8087,
+    disableHostCheck: true,
+    open: true,
     historyApiFallback: true,
     overlay: {
-      warnings: true,
+      warnings: false,
       errors: true
     },
     proxy: [
       {
-        context: ['/api', '/auth', '/ws', '/js/variables.js', '/sockjs-node'],
-        target: 'http://localhost:3000',
+        context: ['/api', '/auth', '/ws'],
+        target: `http://localhost:${process.env.PORT || 8090}`,
         secure: false,
         changeOrigin: true,
-        ws: true
+        ws: (process.env.ENABLE_SOCKETS || false)
       }
     ]
-  },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        styles: {
-          name: 'styles',
-          test: /\.css$/,
-          chunks: 'all',
-          enforce: true
-        }
-      }
-    }
   },
   module: {
     rules: [
@@ -69,18 +57,27 @@ const config = {
         enforce: 'pre',
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'eslint-loader'
+        include: [/client/, /server/],
+        loader: [
+          {
+            loader: 'eslint-loader',
+            options: {
+              cache: false,
+
+              cacheIdentifer: eslintCacheIdentifier
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
-        include: path.resolve(__dirname, 'client'),
-        loaders: ['thread-loader', 'babel-loader'],
+        loaders: ['babel-loader'],
+        include: [/client/, /stories/],
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
         use: [
-          'thread-loader',
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -88,22 +85,9 @@ const config = {
               hmr: process.env.NODE_ENV === 'development'
             }
           },
+          { loader: 'css-loader', options: { sourceMap: true } },
           {
-            loader: 'css-loader',
-            options: { sourceMap: false }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('tailwindcss'),
-                require('autoprefixer')(),
-                require('cssnano')()
-              ]
-            }
+            loader: 'postcss-loader'
           }
         ]
       },
@@ -122,22 +106,10 @@ const config = {
               hmr: process.env.NODE_ENV === 'development'
             }
           },
+
+          { loader: 'css-loader', options: { sourceMap: true } },
           {
-            loader: 'css-loader',
-            options: { sourceMap: false }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: (loader) => [
-                require('postcss-import')({ root: loader.resourcePath }),
-                require('postcss-preset-env')(),
-                require('tailwindcss'),
-                require('autoprefixer')(),
-                require('cssnano')()
-              ]
-            }
+            loader: 'postcss-loader'
           },
           {
             loader: 'sass-loader',
@@ -148,29 +120,12 @@ const config = {
         ]
       },
       {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: 'images/[name].[ext]'
-            }
-          }
-        ]
+        test: /\.(jpg|png|gif|svg|webp)$/,
+        loader: 'image-webpack-loader',
+        enforce: 'pre'
       },
       {
-        test: /\.eot(\?v=\d+.\d+.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: 'fonts/[name].[ext]'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(png|jpg|gif|webp)$/,
         use: [
           {
             loader: 'file-loader'
@@ -178,14 +133,38 @@ const config = {
         ]
       },
       {
-        test: /\.[ot]tf(\?v=\d+.\d+.\d+)?$/,
-        use: 'file-loader'
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.eot$/,
         use: [
           {
             loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.woff(2)$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.[ot]tf$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-url-loader',
+            options: {
+              limit: 10 * 1024,
+              noquotes: true
+            }
           }
         ]
       }
@@ -193,42 +172,60 @@ const config = {
   },
 
   plugins: [
-    new webpack.LoaderOptionsPlugin({
-      test: /\.js$/,
-      options: {
-        eslint: {
-          configFile: path.resolve(__dirname, '.eslintrc'),
-          cache: false
-        }
-      }
-    }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-      chunkFilename: '[id].css',
+      filename: 'css/main.css',
+      chunkFilename: 'css/[id].css',
       ignoreOrder: false
     }),
-    new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
-    new CopyWebpackPlugin([{ from: 'assets/fonts', to: 'fonts' }]),
-    new CopyWebpackPlugin([{ from: 'index.html', to: 'index.html' }]),
+    new CopyWebpackPlugin(
+      {
+        patterns: [
+          { from: `${__dirname}/client/assets/images`, to: 'images' },
+          { from: `${__dirname}/client/assets/fonts`, to: 'fonts' },
 
-    new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-    new CopyWebpackPlugin([{ from: 'assets/manifest.json', to: 'manifest.json' }]),
-    new CopyWebpackPlugin([{ from: 'assets/robots.txt', to: 'robots.txt' }]),
+          { from: `${__dirname}/client/assets/sitemap.xml`, to: 'sitemap.xml' },
+          { from: `${__dirname}/client/assets/manifest.json`, to: 'manifest.json' },
+          { from: `${__dirname}/client/index.html`, to: 'index.html' },
 
-    new WebpackShellPlugin({ onBuildStart: ['npm run watch:server'] }),
+          {
+            from: `${__dirname}/client/install-sw.js`,
+            to: 'js/install-sw.js',
+            transform: (content) => {
+              return content.toString().replace(/APP_VERSION/g, version)
+            }
+          },
+          { from: `${__dirname}/client/assets/robots.txt`, to: 'robots.txt' },
+          {
+            from: `${__dirname}/client/html.js`,
+            to: 'html.js',
+            transform: (content) => {
+              return content.toString().replace(/COMMITHASH/g, version)
+            }
+          },
+          {
+            from: `${__dirname}/client/sw.js`,
+            to: 'sw.js',
+            transform: (content) => {
+              return content.toString().replace(/APP_VERSION/g, version)
+            }
+          }
+        ]
+      },
+      { parallel: 100 }
+    ),
 
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development'
-    }),
+    new ReactRefreshWebpackPlugin(),
     new webpack.DefinePlugin(
       Object.keys(process.env).reduce(
         (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
-        {}
+        {
+          APP_VERSION: uuidv4().substr(0, 7),
+          ENABLE_SOCKETS: JSON.stringify(process.env.ENABLE_SOCKETS || false)
+        }
       )
     ),
-    new HardSourceWebpackPlugin(),
-
+    //  new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ]
 }
