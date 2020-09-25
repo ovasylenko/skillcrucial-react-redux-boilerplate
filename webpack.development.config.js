@@ -5,7 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const { v4: uuidv4 } = require('uuid')
 const eslintCacheIdentifier = JSON.stringify(fs.statSync('.eslintrc').mtimeMs)
 require('dotenv').config()
 
@@ -220,7 +219,7 @@ const config = {
       Object.keys(process.env).reduce(
         (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
         {
-          APP_VERSION: uuidv4().substr(0, 7),
+          APP_VERSION: +new Date(),
           ENABLE_SOCKETS: JSON.stringify(process.env.ENABLE_SOCKETS || false)
         }
       )
