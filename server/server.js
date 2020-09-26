@@ -51,27 +51,6 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-// server.get('/api/v1/users', async (req, res) => {
-//   const url = 'https://jsonplaceholder.typicode.com/users'
-//   const text = await axios(url).then((users) => JSON.stringify(users.data))
-//   writeFile(`${__dirname}/users.json`, text, { encoding: 'utf8' })
-//   res.json(JSON.parse(text))
-// })
-
-// server.get('/api/v1/users', async (req, res) => {
-//   const url = 'https://jsonplaceholder.typicode.com/users'
-//   const data = await readFile(`${__dirname}/users.json`)
-//     .then((file) => {
-//       return JSON.parse(file)
-//     })
-//     .catch(async () => {     
-//       const text = await axios(url).then((users) => JSON.stringify(users.data))
-//       writeFile(`${__dirname}/users.json`, text, { encoding: 'utf8' })
-//       return JSON.parse(text)
-//     })
-//   res.json(data)
-// })
-
 const siteUrl = 'https://jsonplaceholder.typicode.com/users'
 
 const writeToFile = (text) => {
@@ -84,9 +63,9 @@ const readFromFile = (siteAddress) => {
     .then((file) => {
       return JSON.parse(file)
     })
-    .catch(async () => {     
-      const text = await axios(url).then(users => users.data)
-      text.sort((a,b) => a.id - b.id)
+    .catch(async () => {
+      const text = await axios(url).then((users) => users.data)
+      text.sort((a, b) => a.id - b.id)
       writeToFile(text)
       return text
     })
@@ -100,9 +79,9 @@ server.get('/api/v1/users', async (req, res) => {
 server.post('/api/v1/users', async (req, res) => {
   const text = await readFromFile(siteUrl)
   const newUser = req.body
-  newUser.id = (text.length === 0) ? 1 : text[text.length - 1].id + 1
+  newUser.id = text.length === 0 ? 1 : text[text.length - 1].id + 1
   writeToFile([...text, newUser])
-  res.json({status: 'success', id: newUser.id})
+  res.json({ status: 'success', id: newUser.id })
 })
 
 server.patch('/api/v1/users/:userId', async (req, res) => {
@@ -111,30 +90,26 @@ server.patch('/api/v1/users/:userId', async (req, res) => {
   const text = await readFromFile(siteUrl)
   const userToMod = text.find((it) => it.id === +userId)
   const userMoodified = { ...userToMod, ...update }
-  const newText = text.reduce((acc, rec) => {
-    return (rec.id === userMoodified.id) ? [ ...acc, userMoodified ] : [ ...acc, rec ]
-  }, [])
+  const newText = text.map((rec) => {
+    return rec.id === userMoodified.id ? userMoodified : rec
+  })
   writeToFile(newText)
-  res.json({status: 'success', id: userToMod.id})
+  res.json({ status: 'success', id: userToMod.id })
 })
 
 server.delete('/api/v1/users/:userId', async (req, res) => {
   const { userId } = req.params
   const text = await readFromFile(siteUrl)
   const userToDel = text.find((it) => it.id === +userId)
-  const newText = text.reduce((acc, rec) => {
-    if (rec.id !== userToDel.id) { 
-      return [ ...acc, rec ]
-    }
-    return acc
-  }, [])
+  const newText = text.filter((rec) => rec.id !== userToDel.id)
   writeToFile(newText)
-  res.json({status: 'success', id: userToDel.id})
+  res.json({ status: 'success', id: userToDel.id })
 })
 
 server.delete('/api/v1/users', (req, res) => {
   unlink(`${__dirname}/users.json`)
-  res.json({ status: 'ok' })
+    .then(() => res.json({ status: 'ok' }))
+    .catch(() => res.send("File doesn't exist"))
 })
 
 server.use('/api/', (req, res) => {
