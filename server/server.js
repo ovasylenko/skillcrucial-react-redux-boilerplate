@@ -109,10 +109,10 @@ server.delete('/api/v1/users/:userId', (req, res) => {
     })
 })
 
-server.delete('/api/v1/users', () => {
-  if(`${__dirname}/users.json`) {
-    unlink(`${__dirname}/users.json`)
-  }
+server.delete('/api/v1/users', (req, res) => {
+  unlink(`${__dirname}/users.json`)
+    .then(() => res.json({status: "success"}))
+    .catch(() => res.send("all users deleted"))
 })
 
 server.use('/api/', (req, res) => {
