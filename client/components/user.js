@@ -4,27 +4,27 @@ import { bindActionCreators } from 'redux'
 import { Link, useParams } from 'react-router-dom'
 import Head from './head'
 
-const Dummy = () => {
-  const { planetId } = useParams()
+const User = () => {
+  const { user } = useParams()
   return (
     <div>
       <Head title="Hello" />
-      <div id="title">Main</div>
+      <div id="title">Profile</div>
       <div className="flex items-center justify-center h-screen">
         <div className="bg-indigo-800 text-white font-bold rounded-lg border shadow-lg p-10">
-          This is dummy component{planetId}
-          <Link to="/dashboard/profile/e7aec42d-a611-47cc-a5c8-93e75ce35f1c"> Go To Profile </Link>
-          <Link to="/dashboard"> Go To Root </Link>
+          <div id="username">{user}</div>
+          <Link to="/dashboard/main"> Go To Main </Link>
+          <Link to="/dashboard"> Go To Roor </Link>
         </div>
       </div>
     </div>
   )
 }
 
-Dummy.propTypes = {}
+User.propTypes = {}
 
 const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dummy)
+export default connect(mapStateToProps, mapDispatchToProps)(User)
