@@ -20,6 +20,7 @@
         "test:watch": "jest --watch",
         "coverage": "jest --coverage",
         "next:build": "next",
+        "debug": "nodemon --inspect start.js",
         "watch:server": "nodemon --legacy-watch start.js --watch server --watch client --exec \"npm run lint:server  --scripts-prepend-node-path && node\"",
         "build:prod": "cross-env NODE_ENV=production webpack --config webpack.production.config.js --progress --profile --colors",
         "build:ssr": "cross-env NODE_ENV=production webpack --config webpack.ssr.config.js --progress --profile --colors",
