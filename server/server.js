@@ -10,21 +10,7 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-const Root = () => ''
-
-try {
-  // eslint-disable-next-line import/no-unresolved
-  // ;(async () => {
-  //   const items = await import('../dist/assets/js/root.bundle')
-  //   console.log(JSON.stringify(items))
-
-  //   Root = (props) => <items.Root {...props} />
-  //   console.log(JSON.stringify(items.Root))
-  // })()
-  console.log(Root)
-} catch (ex) {
-  console.log(' run yarn build:prod to enable ssr')
-}
+const { default: Root } = require('../dist/assets/js/ssr/root.bundle')
 
 let connections = []
 
@@ -61,17 +47,15 @@ server.get('/', (req, res) => {
   })
 })
 
-server.get('/*', (req, res) => {
-  const initialState = {
-    location: req.url
-  }
 
-  return res.send(
-    Html({
-      body: '',
-      initialState
-    })
-  )
+server.get('/*', (req, res) => {
+  const appStream = renderToStaticNodeStream(<Root location={req.url} context={{}} />)
+  res.write(htmlStart)
+  appStream.pipe(res, { end: false })
+  appStream.on('end', () => {
+    res.write(htmlEnd)
+    res.end()
+  })
 })
 
 const app = server.listen(port)
