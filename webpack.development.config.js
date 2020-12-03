@@ -56,7 +56,7 @@ const config = {
     },
     proxy: [
       {
-        context: ['/api', '/auth', '/socket.io'],
+        context: ['/api', '/auth', '/ws'],
         target: 'http://0.0.0.0:8090',
         secure: false,
         changeOrigin: true,
