@@ -17,7 +17,7 @@ module.exports = {
     ? ['react-hot-loader/babel', 'react-refresh/babel']
     : []
   ).concat([
-    'emotion',
+    '@emotion',
     '@babel/plugin-syntax-dynamic-import',
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-class-properties',
