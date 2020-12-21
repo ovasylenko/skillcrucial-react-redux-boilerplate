@@ -23,7 +23,7 @@
         "build:prod": "cross-env NODE_ENV=production webpack --config webpack.production.config.js --progress --profile --colors",
         "build:ssr": "cross-env NODE_ENV=production webpack --config webpack.ssr.config.js --progress --profile --colors",
         "build": "yarn run build:prod && yarn run build:ssr",
-        "heroku-postbuild": "yarn run build:prod",
+        "heroku-postbuild": "yarn run build:prod && yarn run build:ssr",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook"
     },
@@ -68,6 +68,7 @@
         "@babel/preset-typescript": "^7.12.7",
         "@babel/register": "^7.12.1",
         "@babel/runtime": "^7.12.5",
+        "@emotion/babel-plugin": "^11.0.0",
         "babel-core": "7.0.0-bridge.0",
         "babel-eslint": "10.1.0",
         "babel-jest": "^26.6.3",
@@ -104,7 +105,6 @@
         "uuid": "^8.3.1"
     },
     "devDependencies": {
-        "@emotion/babel-plugin": "^11.0.0",
         "@hot-loader/react-dom": "^17.0.0",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
         "@storybook/addon-actions": "^6.1.8",
