@@ -10,12 +10,14 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
+require('colors')
+
 let Root
 try {
   // eslint-disable-next-line import/no-unresolved
   Root = require('../dist/assets/js/ssr/root.bundle').default
 } catch {
-  console.log('SSR not found. Please run yarn run build:ssr')
+  console.log('SSR not found. Please run "yarn run build:ssr"'.red)
 }
 
 let connections = []
@@ -40,7 +42,7 @@ server.use('/api/', (req, res) => {
 
 const [htmlStart, htmlEnd] = Html({
   body: 'separator',
-  title: 'Skillcrucial - Become an IT HERO'
+  title: 'Skillcrucial'
 }).split('separator')
 
 server.get('/', (req, res) => {
