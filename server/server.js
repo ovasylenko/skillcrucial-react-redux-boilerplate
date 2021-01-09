@@ -10,7 +10,13 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-const { default: Root } = require('../dist/assets/js/ssr/root.bundle')
+let Root
+try {
+  // eslint-disable-next-line import/no-unresolved
+  Root = require('../dist/assets/js/ssr/root.bundle').default
+} catch {
+  console.log('SSR not found. Please run yarn run build:ssr')
+}
 
 let connections = []
 

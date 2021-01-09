@@ -173,7 +173,6 @@ const config = {
   },
 
   plugins: [
-    // new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/main.css',
       chunkFilename: 'css/[id].css',
