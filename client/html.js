@@ -8,7 +8,7 @@ const Html = ({ body }) => {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
-      <div id="root">${body}</div>
+      <div id="root">separator</div>
       <script type="text/javascript" src="/js/main.bundle.js?v=COMMITHASH"></script>
     </body>
   </html>

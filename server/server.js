@@ -10,20 +10,14 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-const Root = () => ''
+require('colors')
 
+let Root
 try {
   // eslint-disable-next-line import/no-unresolved
-  // ;(async () => {
-  //   const items = await import('../dist/assets/js/root.bundle')
-  //   console.log(JSON.stringify(items))
-
-  //   Root = (props) => <items.Root {...props} />
-  //   console.log(JSON.stringify(items.Root))
-  // })()
-  console.log(Root)
-} catch (ex) {
-  console.log(' run yarn build:prod to enable ssr')
+  Root = require('../dist/assets/js/ssr/root.bundle').default
+} catch {
+  console.log('SSR not found. Please run "yarn run build:ssr"'.red)
 }
 
 let connections = []
@@ -48,7 +42,7 @@ server.use('/api/', (req, res) => {
 
 const [htmlStart, htmlEnd] = Html({
   body: 'separator',
-  title: 'Skillcrucial - Become an IT HERO'
+  title: 'Skillcrucial'
 }).split('separator')
 
 server.get('/', (req, res) => {
@@ -62,16 +56,13 @@ server.get('/', (req, res) => {
 })
 
 server.get('/*', (req, res) => {
-  const initialState = {
-    location: req.url
-  }
-
-  return res.send(
-    Html({
-      body: '',
-      initialState
-    })
-  )
+  const appStream = renderToStaticNodeStream(<Root location={req.url} context={{}} />)
+  res.write(htmlStart)
+  appStream.pipe(res, { end: false })
+  appStream.on('end', () => {
+    res.write(htmlEnd)
+    res.end()
+  })
 })
 
 const app = server.listen(port)
