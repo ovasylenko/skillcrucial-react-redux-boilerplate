@@ -8,28 +8,25 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
+const CLIENT_PORT = 8087
 const APP_VERSION = 'development'
 const config = {
   stats: {
     modules: false
   },
+  optimization: {
+    moduleIds: 'named',
+    chunkIds: 'named'
+  },
   devtool: 'eval-source-map',
-  entry: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://0.0.0.0:8087',
-    'webpack/hot/only-dev-server',
-    './main.js'
-  ],
+  entry: ['react-hot-loader/patch', 'webpack/hot/only-dev-server', './main.js'],
   resolve: {
-
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
       './setPrototypeOf': './setPrototypeOf.js',
       './defineProperty': './defineProperty.js',
       '../../helpers/esm/typeof': '../../helpers/esm/typeof.js',
       './assertThisInitialized': './assertThisInitialized.js',
-
       d3: 'd3/index.js',
       'react-dom': '@hot-loader/react-dom'
     }
@@ -43,12 +40,12 @@ const config = {
   mode: 'development',
   context: resolve(__dirname, 'client'),
   devServer: {
-    hot: true,
+    hotOnly: true,
     contentBase: resolve(__dirname, 'dist/assets'),
     watchContentBase: true,
     host: '0.0.0.0',
-    port: 8087,
-
+    port: CLIENT_PORT,
+    useLocalIp: true,
     historyApiFallback: true,
     overlay: {
       warnings: false,
@@ -56,11 +53,11 @@ const config = {
     },
     proxy: [
       {
-        context: ['/api', '/auth', '/ws'],
+        context: ['/api', '/auth', '/ws', '/favicon.ico'],
         target: 'http://0.0.0.0:8090',
         secure: false,
         changeOrigin: true,
-        ws: true
+        ws: !!process.env.ENABLE_SOCKETS
       }
     ]
   },
@@ -75,7 +72,7 @@ const config = {
       },
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        use: ['react-hot-loader/webpack', 'babel-loader'],
         exclude: /node_modules/
       },
       {
@@ -173,7 +170,6 @@ const config = {
   },
 
   plugins: [
-    // new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/main.css',
       chunkFilename: 'css/[id].css',
@@ -216,7 +212,7 @@ const config = {
 
     new ReactRefreshWebpackPlugin({
       overlay: {
-        sockIntegration: 'whm'
+        sockIntegration: 'wds'
       }
     }), // new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
