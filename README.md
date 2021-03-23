@@ -8,7 +8,6 @@ git clone git@github.com:ovasylenko/skillcrucial-react-redux-boilerplate.git
 ```
 
 2. To install dependencies and clean the git repo run:
-
 ```shell
 yarn install
 ```
@@ -20,20 +19,18 @@ npm install
 ```
 
 3. Create Server-Side Rendering build
-
 ```shell
 yarn run build:ssr
 ```
 
 4. Create first build
-
 ```shell
 yarn run build:prod
 ```
+
 5. Copy .env.example file to .env and make the necessary changes there
 
 6. Run project in Dev mode
-
 ```shell
 yarn run dev
 ```
@@ -100,7 +97,6 @@ yarn build:prod
 ```
 
 Prepares your app for deployment to production environment (using the webpack.production.frontend.config.js) (does not run tests). Optimizes and minifies all files, piping them to the `dist` folder.
-
 
 #### Testing
 
