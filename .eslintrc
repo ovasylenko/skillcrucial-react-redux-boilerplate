@@ -4,8 +4,6 @@
   "extends": [
     "airbnb",
     "prettier",
-    "prettier/babel",
-    "prettier/react",
     "plugin:react/recommended"
   ],
   "parserOptions": {
