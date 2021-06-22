@@ -163,7 +163,8 @@
         "webpack-cli": "^4.6.0",
         "webpack-dev-server": "^3.11.2",
         "webpack-node-externals": "^3.0.0",
-        "webpack-shell-plugin": "^0.5.0"
+        "webpack-shell-plugin": "^0.5.0",
+        "@welldone-software/why-did-you-render": "^6.2.0"
     },
     "nodemonConfig": {
         "ignore": [
