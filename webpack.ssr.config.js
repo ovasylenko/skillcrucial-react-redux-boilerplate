@@ -3,14 +3,12 @@ require('dotenv').config()
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const StringReplacePlugin = require('string-replace-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 const nodeExternals = require('webpack-node-externals')
 
-const gitRevisionPlugin = new GitRevisionPlugin()
 const date = +new Date()
 
 console.log(date - (date % (1000 * 60 * 30)))
