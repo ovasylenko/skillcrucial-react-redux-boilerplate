@@ -5,13 +5,13 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const StringReplacePlugin = require('string-replace-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 const nodeExternals = require('webpack-node-externals')
 
 const date = +new Date()
 
-console.log(date - (date % (1000 * 60 * 30)))
+
 const APP_VERSION = Buffer.from((date - (date % (1000 * 60 * 30))).toString())
   .toString('base64')
   .replace(/==/, '')
@@ -19,30 +19,19 @@ const APP_VERSION = Buffer.from((date - (date % (1000 * 60 * 30))).toString())
 const config = {
   optimization: {
     minimize: true,
-    minimizer: [
-      new TerserJSPlugin({ parallel: true }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessor: require('cssnano'),
-        cssProcessorPluginOptions: {
-          preset: ['default', { discardComments: { removeAll: true } }]
-        }
-      })
-    ]
+    minimizer: [new TerserJSPlugin({ parallel: true })]
   },
   target: 'node',
   mode: 'development',
   entry: {
-    root: './config/root.js'
+    root: './config/root.jsx'
   },
   externals: [nodeExternals()],
   resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
 
     alias: {
-      d3: 'd3/index.js',
-      './setPrototypeOf': './setPrototypeOf.js',
-      './defineProperty': './defineProperty.js',
-      '../../helpers/esm/typeof': '../../helpers/esm/typeof.js',
-      './assertThisInitialized': './assertThisInitialized.js'
+      d3: 'd3/index.js'
     }
   },
   output: {
@@ -64,13 +53,13 @@ const config = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         exclude: /node_modules/,
         include: [/client/, /server/],
         use: ['eslint-loader']
       },
       {
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         use: 'babel-loader',
         exclude: /node_modules/
       },
@@ -168,6 +157,7 @@ const config = {
     ]
   },
   plugins: [
+    new CssMinimizerPlugin({ parallel: 4 }),
     new StringReplacePlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/ssr/[name].css',
