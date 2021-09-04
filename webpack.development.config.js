@@ -19,14 +19,10 @@ const config = {
     chunkIds: 'named'
   },
   devtool: 'eval-source-map',
-  entry: ['react-hot-loader/patch', 'webpack/hot/only-dev-server', './main.js'],
+  entry: ['./main.jsx'],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      './setPrototypeOf': './setPrototypeOf.js',
-      './defineProperty': './defineProperty.js',
-      '../../helpers/esm/typeof': '../../helpers/esm/typeof.js',
-      './assertThisInitialized': './assertThisInitialized.js',
       d3: 'd3/index.js',
       'react-dom': '@hot-loader/react-dom'
     }
@@ -65,14 +61,18 @@ const config = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         exclude: /node_modules/,
         include: [/client/, /server/],
         use: ['eslint-loader']
       },
       {
-        test: /\.js$/,
-        use: ['react-hot-loader/webpack', 'babel-loader'],
+        test: /\.js|jsx$/,
+        use: [
+          {
+            loader: require.resolve('babel-loader')
+          }
+        ],
         exclude: /node_modules/
       },
       {
