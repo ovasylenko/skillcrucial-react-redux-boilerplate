@@ -53,7 +53,7 @@ const config = {
         target: 'http://0.0.0.0:8090',
         secure: false,
         changeOrigin: true,
-        ws: !!process.env.ENABLE_SOCKETS
+        ws: process.env.ENABLE_SOCKETS === 'true'
       }
     ]
   },
