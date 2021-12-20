@@ -25,7 +25,8 @@
         "build": "yarn run build:prod && yarn run build:ssr",
         "heroku-postbuild": "yarn run build:prod && yarn run build:ssr",
         "storybook": "start-storybook -p 6006",
-        "build-storybook": "build-storybook"
+        "build-storybook": "build-storybook",
+        "prepare": "husky install"
     },
     "author": "",
     "license": "MIT",
@@ -122,8 +123,7 @@
         "git-revision-webpack-plugin": "^5.0.0",
         "glob": "^7.2.0",
         "hard-source-webpack-plugin": "^0.13.1",
-        "html-webpack-plugin": "^5.5.0",
-        "husky": "^7.0.4",
+        "husky": "^7.0.0",
         "image-webpack-loader": "^7.0.1",
         "jest": "^27.4.5",
         "jest-cli": "^27.4.5",
@@ -155,11 +155,5 @@
         "ignore": [
             "*.hot-update.json"
         ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "cross-env yarn run lint && yarn test",
-            "pre-push": "cross-env yarn run lint && yarn test"
-        }
     }
 }
