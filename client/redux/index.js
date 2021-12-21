@@ -23,7 +23,7 @@ const composedEnhancers = composeFunc(applyMiddleware(...middleware), ...enhance
 const store = createStore(rootReducer(history), initialState, composedEnhancers)
 let socket
 
-if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS) {
+if (typeof ENABLE_SOCKETS !== 'undefined' && ENABLE_SOCKETS === 'true') {
   const initSocket = () => {
     socket = new SockJS(`${isBrowser ? window.location.origin : 'http://localhost'}/ws`)
 

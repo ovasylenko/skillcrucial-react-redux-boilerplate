@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const Html = ({ body }) => {
   return `
   <!DOCTYPE html>

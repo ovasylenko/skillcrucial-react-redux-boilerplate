@@ -7,7 +7,7 @@ const Home = () => {
 
   return (
     <div>
-      <Head title="Hello" />
+      <Head title="Dashboard" />
       <img alt="wave" src="images/wave.jpg" />
       <button type="button" onClick={() => setCounterNew(counter + 1)}>
         updateCounter
