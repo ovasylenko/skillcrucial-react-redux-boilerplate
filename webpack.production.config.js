@@ -7,9 +7,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const StringReplacePlugin = require('string-replace-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-
+const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
-
 
 const date = +new Date()
 const APP_VERSION = Buffer.from((date - (date % (1000 * 60 * 30))).toString())
@@ -47,13 +46,6 @@ const config = {
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.js|jsx$/,
-        exclude: /node_modules/,
-        include: [/client/, /server/],
-        use: ['eslint-loader']
-      },
       {
         test: /\.js|jsx$/,
         use: 'babel-loader',
@@ -153,8 +145,11 @@ const config = {
     ]
   },
   plugins: [
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: 'node_modules'
+    }),
     new StringReplacePlugin(),
-
     new CopyWebpackPlugin(
       {
         patterns: [
