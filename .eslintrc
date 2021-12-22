@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "root": true,
   "extends": [
     "airbnb",
@@ -32,6 +32,14 @@
     "ENABLE_SOCKETS": true
   },
   "rules": {
+    "react/no-unstable-nested-components": [
+      "warn",
+      { "allowAsProps": true }
+    ],
+    "react/function-component-definition": [2, {
+      "namedComponents": "arrow-function",
+      "unnamedComponents": "arrow-function"
+    }],
     "prettier/prettier": ["warn"],
     "space-before-function-paren": "off",
     "react/prefer-stateless-function": "warn",

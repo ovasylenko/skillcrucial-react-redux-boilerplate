@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 const CLIENT_PORT = 8087
 const APP_VERSION = 'development'
@@ -53,19 +54,12 @@ const config = {
         target: 'http://0.0.0.0:8090',
         secure: false,
         changeOrigin: true,
-        ws: !!process.env.ENABLE_SOCKETS
+        ws: process.env.ENABLE_SOCKETS === 'true'
       }
     ]
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.js|jsx$/,
-        exclude: /node_modules/,
-        include: [/client/, /server/],
-        use: ['eslint-loader']
-      },
       {
         test: /\.js|jsx$/,
         use: [
@@ -170,6 +164,10 @@ const config = {
   },
 
   plugins: [
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: 'node_modules'
+    }),
     new MiniCssExtractPlugin({
       filename: 'css/main.css',
       chunkFilename: 'css/[id].css',

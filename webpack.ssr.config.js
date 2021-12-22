@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const StringReplacePlugin = require('string-replace-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-
+const ESLintPlugin = require('eslint-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 
 const date = +new Date()
@@ -51,13 +51,6 @@ const config = {
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.js|jsx$/,
-        exclude: /node_modules/,
-        include: [/client/, /server/],
-        use: ['eslint-loader']
-      },
       {
         test: /\.js|jsx$/,
         use: 'babel-loader',
@@ -157,6 +150,10 @@ const config = {
     ]
   },
   plugins: [
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: 'node_modules'
+    }),
     new CssMinimizerPlugin({ parallel: 4 }),
     new StringReplacePlugin(),
     new MiniCssExtractPlugin({
