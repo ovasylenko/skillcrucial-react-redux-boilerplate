@@ -16,7 +16,7 @@ const server = express()
 
 const middleware = [
   cors(),
-  express.static(path.resolve(__dirname, '../dist/assets')),
+  express.static(path.resolve(__dirname, '../dist')),
   express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }),
   express.json({ limit: '50mb', extended: true }),
   cookieParser()

@@ -8,6 +8,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const CLIENT_PORT = 8087
 const APP_VERSION = 'development'
@@ -29,8 +31,8 @@ const config = {
     }
   },
   output: {
-    filename: 'js/[name].bundle.js',
-    path: resolve(__dirname, 'dist/assets'),
+    filename: 'js/[name].bundle.js?v=COMMITHASH1',
+    path: resolve(__dirname, 'dist'),
     publicPath: '/',
     chunkFilename: 'js/[name].[contenthash].js'
   },
@@ -38,7 +40,7 @@ const config = {
   context: resolve(__dirname, 'client'),
   devServer: {
     hotOnly: true,
-    contentBase: resolve(__dirname, 'dist/assets'),
+    contentBase: resolve(__dirname, 'dist'),
     watchContentBase: true,
     host: '0.0.0.0',
     port: CLIENT_PORT,
@@ -177,7 +179,6 @@ const config = {
           { from: 'assets/images', to: 'images' },
           { from: 'assets/fonts', to: 'fonts' },
           { from: 'assets/manifest.json', to: 'manifest.json' },
-          { from: 'index.html', to: 'index.html' },
           {
             from: 'install-sw.js',
             to: 'js/install-sw.js',
@@ -210,6 +211,8 @@ const config = {
       }
     }), // new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({ template: 'index.html' }),
     new webpack.DefinePlugin(
       Object.keys(process.env).reduce(
         (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
