@@ -98,7 +98,6 @@ const config = {
               publicPath: '../'
             }
           },
-
           { loader: 'css-loader', options: { sourceMap: true } },
           {
             loader: 'postcss-loader'
@@ -162,7 +161,6 @@ const config = {
       }
     ]
   },
-
   plugins: [
     new ESLintPlugin({
       extensions: ['js', 'jsx'],
@@ -180,7 +178,6 @@ const config = {
           { from: 'assets/fonts', to: 'fonts' },
           { from: 'assets/manifest.json', to: 'manifest.json' },
           { from: 'index.html', to: 'index.html' },
-
           {
             from: 'install-sw.js',
             to: 'js/install-sw.js',
@@ -207,7 +204,6 @@ const config = {
       },
       { parallel: 100 }
     ),
-
     new ReactRefreshWebpackPlugin({
       overlay: {
         sockIntegration: 'wds'
