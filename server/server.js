@@ -2,22 +2,12 @@ import express from 'express'
 import path from 'path'
 import cors from 'cors'
 import sockjs from 'sockjs'
-import { renderToStaticNodeStream } from 'react-dom/server'
-import React from 'react'
-
 import cookieParser from 'cookie-parser'
+
 import config from './config'
 import Html from '../client/html'
 
 require('colors')
-
-let Root
-try {
-  // eslint-disable-next-line import/no-unresolved
-  Root = require('../dist/assets/js/ssr/root.bundle').default
-} catch {
-  console.log('SSR not found. Please run "yarn run build:ssr"'.red)
-}
 
 let connections = []
 
@@ -26,7 +16,7 @@ const server = express()
 
 const middleware = [
   cors(),
-  express.static(path.resolve(__dirname, '../dist/assets')),
+  express.static(path.resolve(__dirname, '../dist')),
   express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }),
   express.json({ limit: '50mb', extended: true }),
   cookieParser()
@@ -34,34 +24,29 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-server.use('/api/', (req, res) => {
-  res.status(404)
-  res.end()
-})
-
-const [htmlStart, htmlEnd] = Html({
-  body: 'separator',
-  title: 'Skillcrucial'
-}).split('separator')
-
 server.get('/', (req, res) => {
-  const appStream = renderToStaticNodeStream(<Root location={req.url} context={{}} />)
-  res.write(htmlStart)
-  appStream.pipe(res, { end: false })
-  appStream.on('end', () => {
-    res.write(htmlEnd)
-    res.end()
-  })
+  res.send(`
+    <h2>This is SkillCrucial Express Server!</h2>
+    <h3>Client hosted at <a href="http://localhost:8087">localhost:8087</a>!</h3>
+  `)
 })
 
 server.get('/*', (req, res) => {
-  const appStream = renderToStaticNodeStream(<Root location={req.url} context={{}} />)
-  res.write(htmlStart)
-  appStream.pipe(res, { end: false })
-  appStream.on('end', () => {
-    res.write(htmlEnd)
-    res.end()
-  })
+  const initialState = {
+    location: req.url
+  }
+
+  return res.send(
+    Html({
+      body: '',
+      initialState
+    })
+  )
+})
+
+server.use('/api/', (req, res) => {
+  res.status(404)
+  res.end()
 })
 
 const app = server.listen(port)

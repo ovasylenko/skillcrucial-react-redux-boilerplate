@@ -9,6 +9,8 @@ const StringReplacePlugin = require('string-replace-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const date = +new Date()
 const APP_VERSION = Buffer.from((date - (date % (1000 * 60 * 30))).toString())
@@ -31,8 +33,8 @@ const config = {
     }
   },
   output: {
-    filename: 'js/[name].bundle.js',
-    path: resolve(__dirname, 'dist/assets'),
+    filename: 'js/[name].bundle.js?v=COMMITHASH1',
+    path: resolve(__dirname, 'dist'),
     publicPath: '/',
     chunkFilename: 'js/[name].js?id=[chunkhash]'
   },
@@ -156,8 +158,6 @@ const config = {
           { from: 'assets/images', to: 'images' },
           { from: 'assets/fonts', to: 'fonts' },
           { from: 'assets/manifest.json', to: 'manifest.json' },
-          { from: 'index.html', to: 'index.html' },
-
           {
             from: 'install-sw.js',
             to: 'js/install-sw.js',
@@ -185,12 +185,13 @@ const config = {
       { parallel: 100 }
     ), // `...`,
     new CssMinimizerPlugin({ parallel: 4 }),
-
     new MiniCssExtractPlugin({
       filename: 'css/[name].css',
       chunkFilename: 'css/[id].css',
       ignoreOrder: false
     }),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({ template: 'index.html' }),
     new webpack.DefinePlugin(
       Object.keys(process.env).reduce(
         (res, key) => ({ ...res, [key]: JSON.stringify(process.env[key]) }),
