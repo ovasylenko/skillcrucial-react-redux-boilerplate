@@ -26,7 +26,6 @@ const config = {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
       d3: 'd3/index.js',
-      'react-dom': '@hot-loader/react-dom'
     }
   },
   output: {
