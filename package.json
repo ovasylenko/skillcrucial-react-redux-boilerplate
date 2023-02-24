@@ -1,6 +1,6 @@
 {
     "name": "boilerplate-skillcrucial",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "description": "Boilerplate SkillCrucial",
     "main": "index.js",
     "scripts": {
