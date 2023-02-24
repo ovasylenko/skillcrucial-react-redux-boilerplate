@@ -29,7 +29,7 @@ server.get('/', (req, res) => {
   const HOST = req.headers.host.replace(/:\d+/g, '')
   res.send(`
     <h2>This is SkillCrucial Express Server!</h2>
-    <h3>Client hosted at <a href=http://${HOST}:${CLIENT_PORT}>http://${HOST}:${CLIENT_PORT}</a>!</h3>
+    <h3>Client hosted at <a href="http://${HOST}:${CLIENT_PORT}">http://${HOST}:${CLIENT_PORT}</a>!</h3>
   `)
 })
 
