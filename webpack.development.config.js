@@ -1,18 +1,17 @@
 const { resolve } = require('path')
 require('dotenv').config()
-const fs = require('fs')
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const CLIENT_PORT = 8087
-const APP_VERSION = 'development'
+const CLIENT_PORT = process.env.CLIENT_PORT || 8087
+const APP_VERSION = process.env.APP_VERSION || 'development'
+
 const config = {
   stats: {
     modules: false
@@ -209,7 +208,7 @@ const config = {
       overlay: {
         sockIntegration: 'wds'
       }
-    }), // new HardSourceWebpackPlugin(),
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ template: 'index.html' }),

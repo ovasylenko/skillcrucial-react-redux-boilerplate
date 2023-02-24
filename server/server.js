@@ -11,7 +11,8 @@ require('colors')
 
 let connections = []
 
-const port = process.env.PORT || 8090
+const PORT = config.port || 8090
+const CLIENT_PORT = config.clientPort || 8087
 const server = express()
 
 const middleware = [
@@ -25,9 +26,10 @@ const middleware = [
 middleware.forEach((it) => server.use(it))
 
 server.get('/', (req, res) => {
+  const HOST = req.headers.host.replace(/:\d+/g, '')
   res.send(`
     <h2>This is SkillCrucial Express Server!</h2>
-    <h3>Client hosted at <a href="http://localhost:8087">localhost:8087</a>!</h3>
+    <h3>Client hosted at <a href=http://${HOST}:${CLIENT_PORT}>http://${HOST}:${CLIENT_PORT}</a>!</h3>
   `)
 })
 
@@ -49,7 +51,7 @@ server.use('/api/', (req, res) => {
   res.end()
 })
 
-const app = server.listen(port)
+const app = server.listen(PORT)
 
 if (config.isSocketsEnabled) {
   const echo = sockjs.createServer()
@@ -63,4 +65,4 @@ if (config.isSocketsEnabled) {
   })
   echo.installHandlers(app, { prefix: '/ws' })
 }
-console.log(`Serving at http://localhost:${port}`)
+console.log(`Serving at http://localhost:${PORT}`)

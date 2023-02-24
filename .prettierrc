@@ -6,4 +6,4 @@
   "singleQuote": true,
   "parser": "babel",
   "arrowParens": "always"
- }
+}
