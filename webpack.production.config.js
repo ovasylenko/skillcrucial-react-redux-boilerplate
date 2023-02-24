@@ -1,6 +1,5 @@
 const { resolve } = require('path')
 require('dotenv').config()
-const fs = require('fs')
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')

@@ -1,18 +1,18 @@
 const { resolve } = require('path')
 require('dotenv').config()
-const fs = require('fs')
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const CLIENT_PORT = 8087
-const APP_VERSION = 'development'
+const PORT = process.env.PORT || 8080
+const CLIENT_PORT = process.env.CLIENT_PORT || 8081
+const APP_VERSION = process.env.APP_VERSION || 'development'
+
 const config = {
   stats: {
     modules: false
@@ -26,8 +26,7 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      d3: 'd3/index.js',
-      'react-dom': '@hot-loader/react-dom'
+      d3: 'd3/index.js'
     }
   },
   output: {
@@ -53,7 +52,7 @@ const config = {
     proxy: [
       {
         context: ['/api', '/auth', '/ws', '/favicon.ico'],
-        target: 'http://0.0.0.0:8090',
+        target: `http://0.0.0.0:${PORT}`,
         secure: false,
         changeOrigin: true,
         ws: process.env.ENABLE_SOCKETS === 'true'
@@ -209,7 +208,7 @@ const config = {
       overlay: {
         sockIntegration: 'wds'
       }
-    }), // new HardSourceWebpackPlugin(),
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ template: 'index.html' }),
