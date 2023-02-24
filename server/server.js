@@ -11,8 +11,8 @@ require('colors')
 
 let connections = []
 
-const PORT = config.port || 8090
-const CLIENT_PORT = config.clientPort || 8087
+const PORT = config.port || 8080
+const CLIENT_PORT = config.clientPort || 8081
 const server = express()
 
 const middleware = [
